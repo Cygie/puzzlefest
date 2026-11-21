@@ -2,6 +2,8 @@
 
 Nederlandse puzzels als web-app die je op Android kunt installeren (PWA). De eerste puzzel is de **Woordzoeker**.
 
+**Live:** https://cygie.github.io/puzzlefest/
+
 ## Vereisten
 
 - Node.js 20+ (aanbevolen: 22 LTS)
@@ -29,14 +31,17 @@ De dev-server luistert ook op het netwerk (`--host`). Open op je telefoon het ad
 | `npm run test:coverage` | Tests met coverage                                            |
 | `npm run icons`         | PWA-iconen opnieuw genereren in `public/icons/`               |
 
+## Publiceren
+
+Elke push naar `main` draait via GitHub Actions (`.github/workflows/deploy.yml`) lint, tests en de build, en zet de site op GitHub Pages. De build gebruikt `BASE_PATH=/puzzlefest/`; lokaal is dat `/`.
+
 ## Installeren op Android
 
 Een PWA is alleen installeerbaar via **HTTPS** (of `localhost`).
 
-1. Bouw en host de app op een HTTPS-adres (bijv. een statische host), of test lokaal met `npm run build && npm run preview`.
-2. Open de site in **Chrome** op Android.
-3. Tik op het menu (⋮) → **App installeren** / **Toevoegen aan startscherm**.
-4. PuzzleFest verschijnt als app op je startscherm en werkt daarna ook **offline**.
+1. Open https://cygie.github.io/puzzlefest/ in **Chrome** op Android.
+2. Tik op het menu (⋮) → **App installeren** / **Toevoegen aan startscherm**.
+3. PuzzleFest verschijnt als app op je startscherm en werkt daarna ook **offline**.
 
 > Tip voor testen vanaf de Raspberry Pi zonder HTTPS: verbind de telefoon via USB, zet in Chrome `chrome://inspect` → _Port forwarding_ `5173 → localhost:5173` aan, en open `http://localhost:5173` op de telefoon.
 

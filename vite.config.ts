@@ -5,7 +5,11 @@ import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
 
+// Sub-path for hosting, e.g. BASE_PATH=/puzzlefest/ for GitHub Pages; '/' locally.
+const base = process.env.BASE_PATH ?? '/';
+
 export default defineConfig({
+  base,
   plugins: [
     react(),
     VitePWA({
@@ -16,8 +20,8 @@ export default defineConfig({
         short_name: 'PuzzleFest',
         description: 'Maak en speel Nederlandse puzzels, zoals woordzoekers.',
         lang: 'nl',
-        start_url: '/',
-        scope: '/',
+        start_url: base,
+        scope: base,
         display: 'standalone',
         orientation: 'portrait',
         background_color: '#f6f4fb',
@@ -35,7 +39,7 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,svg,png,woff2}'],
-        navigateFallback: '/index.html',
+        navigateFallback: `${base}index.html`,
       },
     }),
   ],

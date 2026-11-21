@@ -119,8 +119,30 @@ intents:
         depends_on: []
         run_id: run-puzzlefest-005
         completed_at: 2026-11-21T19:41:47.182Z
+  - id: hosting
+    title: HTTPS hosting op GitHub Pages
+    status: in_progress
+    work_items:
+      - id: github-pages-deploy
+        title: Deploy to GitHub Pages
+        status: pending
+        complexity: low
+        mode: autopilot
+        depends_on: []
 runs:
-  active: []
+  active:
+    - id: run-puzzlefest-006
+      scope: single
+      work_items:
+        - id: github-pages-deploy
+          intent: hosting
+          mode: autopilot
+          status: in_progress
+          current_phase: execute
+          checkpoint_state: none
+          current_checkpoint: null
+      current_item: github-pages-deploy
+      started: 2026-11-21T19:46:56.703Z
   completed:
     - id: run-puzzlefest-001
       scope: batch
