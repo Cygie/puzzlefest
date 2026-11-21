@@ -36,3 +36,23 @@
 
 - Global utility classes (`.btn`, `.text-input`, `.card`, `.visually-hidden`) added to `index.css` for reuse across puzzles; component layout stays in CSS modules.
 - `useSetupSettings` writes on every change — fine for this tiny payload.
+
+---
+
+## Work Item: play-ui
+
+**Files Reviewed**: 11 — Auto-fixed: 1 (Prettier), Applied: 2, Skipped: 1. Tests passing. Lint clean.
+
+### Applied
+
+1. [Code Quality] `useTimer.ts` — deferred updater closed over a mutable `last` → negative/lost time. Delta now computed eagerly. (Found by the timer test.)
+2. [Architecture] `PlayGrid.tsx` — `max-width: 70dvh` did not constrain tall grids (aspect-ratio drives height). Replaced with `min(100%, calc(70dvh * width / height))` so e.g. 5×20 fits on screen.
+
+### Skipped
+
+1. [Code Quality] `onProgress` fires on every timer tick (4×/s). No-op today; save-puzzles should debounce/throttle writes.
+
+### Notes
+
+- Matching is by letters, not position, so a legitimate second occurrence (KAT inside KATER) is accepted and highlighted where the player selected it.
+- `GridPreview` removed (superseded).

@@ -4,8 +4,9 @@ title: Save puzzles on device
 intent: woordzoeker
 complexity: medium
 mode: confirm
-status: pending
-depends_on: [play-ui]
+status: in_progress
+depends_on:
+  - play-ui
 created: 2026-11-21T18:25:00Z
 ---
 

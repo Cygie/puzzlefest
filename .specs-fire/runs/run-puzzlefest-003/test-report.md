@@ -26,7 +26,7 @@ status: passed
 - ✅ **Genereer generates; errors in Dutch** — plus "Doorgaan zonder deze woorden / oplossingswoord" fallback
 - ✅ **Settings remembered between sessions** — verified by remount test
 - ✅ **Component tests for main flow**
-- ⚠️ **Visual check at ~360 px** — not automated (headless Chromium hangs on the Pi); manual check pending
+- ✅ **Visual check at ~360 px** — checked manually by the user on the phone (headless Chromium hangs on the Pi)
 
 ## Tests Written
 
@@ -38,4 +38,31 @@ status: passed
 
 | Issue | Severity | Status |
 |-------|----------|--------|
-| No automated visual/layout check | low | manual check on phone via preview server |
+| No automated visual/layout check | low | resolved: manual check on phone OK |
+
+---
+
+## Work Item: play-ui
+
+### Test Results
+- Passed: 20 new (selection 12, PlayScreen 7, formatTime 1); full suite 112
+- Failed: 0
+- Coverage: `selection.ts` 100% statements, `PlayScreen.tsx` ~100%, `PlayGrid.tsx` 87.5% (pointer-cancel and capture-fallback branches untested)
+
+### Acceptance Criteria Validation
+- ✅ Grid scales to screen width; large touch cells — CSS grid + container-query font size; tall grids limited to ~70% viewport height
+- ✅ Swipe (pointer events) or tap start + end cell — both tested
+- ✅ Selection snaps to valid straight lines; found words highlighted and crossed off — SVG marker strokes; word list strike-through
+- ✅ Backwards selection counts — tested
+- ✅ Timer starts on first interaction, pauses when app hidden — tested with fake timers + visibilitychange
+- ✅ Completion screen: time, solution word, Nieuwe puzzel and Opnieuw — tested
+- ✅ Tests for selection logic (pure helper) and completion
+- ⚠️ Feel of swiping on a real phone — manual check pending
+
+### Bug found by tests
+- `useTimer` read a mutable variable inside a deferred state updater, so elapsed time could go backwards. Fixed by computing the delta before scheduling the update.
+
+### Tests Written
+- `src/puzzles/woordzoeker/logic/selection.test.ts`
+- `src/puzzles/woordzoeker/components/PlayScreen.test.tsx`
+- `src/shared/formatTime.test.ts`

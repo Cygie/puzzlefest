@@ -49,3 +49,43 @@ Behaviour:
 | `src/shared/storage.test.ts` | read/write, version mismatch, corrupt JSON, unavailable storage |
 | `logic/setupSettings.test.ts` | word-count suggestion, theme fill (with/without solution), solution status texts |
 | `components/SetupScreen.test.tsx` | theme → list filled; add/paste/remove/clear; invalid word message; steppers clamp 5–20; difficulty select; solution status; generate → puzzle shown; failure → fallback button; settings restored after remount |
+
+---
+
+## Work Item: play-ui
+
+### Approach
+
+Replace the temporary `GridPreview` with an interactive `PlayScreen`. Geometry and matching are pure functions in `logic/selection.ts` (unit-tested); the grid is a CSS grid of letters with an SVG overlay drawing rounded "marker" strokes for found words and the current selection (handles overlapping words cleanly). Pointer events on the grid container (`touch-action: none`, pointer capture) translate coordinates → cell; the line snaps to the nearest of 8 directions and is clipped to the grid. Swipe (down → move → up) and tap-tap (tap start cell, tap end cell) both work. A selection matching an unfound word (forwards or backwards) marks it found. Timer starts on first touch, pauses while the app is hidden. Progress `{ found, elapsedMs }` is a plain serializable object with `initialProgress`/`onProgress` props, ready for save-puzzles.
+
+Completion panel: "Gefeliciteerd!", time, the solution (leftover cells highlighted), buttons **Opnieuw** and **Nieuwe puzzel**.
+
+### Files to Create
+
+| File | Purpose |
+|------|---------|
+| `src/puzzles/woordzoeker/logic/selection.ts` | `cellFromPoint`, `snapLine`, `matchWord`, `leftoverCells` |
+| `src/puzzles/woordzoeker/logic/selection.test.ts` | Unit tests |
+| `src/puzzles/woordzoeker/components/PlayScreen.tsx` + `.module.css` | Screen: timer, grid, word list, completion |
+| `src/puzzles/woordzoeker/components/PlayGrid.tsx` | Grid + SVG overlay + pointer handling |
+| `src/puzzles/woordzoeker/components/useTimer.ts` | Pausable timer hook |
+| `src/puzzles/woordzoeker/components/PlayScreen.test.tsx` | Component tests |
+
+### Files to Modify
+
+| File | Changes |
+|------|---------|
+| `src/puzzles/woordzoeker/WoordzoekerPage.tsx` | Show PlayScreen; Nieuwe puzzel → setup |
+
+### Files to Delete
+
+| File | Reason |
+|------|--------|
+| `components/GridPreview.tsx` + `.module.css` | Replaced by PlayScreen |
+
+### Tests
+
+| Test File | Coverage |
+|-----------|----------|
+| `selection.test.ts` | point→cell incl. edges; snapping (straight, diagonal, off-angle, clipping); matching forwards/backwards/already found/non-word; leftover cells |
+| `PlayScreen.test.tsx` | swipe finds a word (crossed off); backwards swipe; tap-tap; wrong selection does nothing; timer starts on first touch and pauses when hidden; completion shows time + solution; Opnieuw resets |
