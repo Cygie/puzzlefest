@@ -73,3 +73,19 @@
   flex-wrap: wrap;
   margin-top: 8px;
 }
+
+.record {
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.hint {
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+}
+
+.error {
+  margin: 0;
+  color: #c03535;
+  text-align: center;
+}

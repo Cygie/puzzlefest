@@ -16,6 +16,9 @@ import { WordListEditor } from './WordListEditor';
 
 interface SetupScreenProps {
   onGenerated: (puzzle: Puzzle) => void;
+  /** Number of saved puzzles; the "Mijn puzzels" link is shown when `onShowSaved` is set. */
+  savedCount?: number;
+  onShowSaved?: () => void;
 }
 
 interface Failure {
@@ -24,7 +27,7 @@ interface Failure {
   partial?: Puzzle;
 }
 
-export function SetupScreen({ onGenerated }: SetupScreenProps) {
+export function SetupScreen({ onGenerated, savedCount = 0, onShowSaved }: SetupScreenProps) {
   const [settings, update] = useSetupSettings();
   const [failure, setFailure] = useState<Failure | null>(null);
   const { width, height, difficulty, solution, themeId, words } = settings;
@@ -65,7 +68,14 @@ export function SetupScreen({ onGenerated }: SetupScreenProps) {
 
   return (
     <div className={styles.screen}>
-      <h1 className={styles.title}>Nieuwe woordzoeker</h1>
+      <div className={styles.titleRow}>
+        <h1 className={styles.title}>Nieuwe woordzoeker</h1>
+        {onShowSaved && (
+          <button type="button" className="btn btn-link" onClick={onShowSaved}>
+            Mijn puzzels ({savedCount})
+          </button>
+        )}
+      </div>
 
       <section className={styles.section} aria-labelledby="ws-thema">
         <h2 id="ws-thema" className={styles.heading}>

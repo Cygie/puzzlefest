@@ -66,3 +66,26 @@ status: passed
 - `src/puzzles/woordzoeker/logic/selection.test.ts`
 - `src/puzzles/woordzoeker/components/PlayScreen.test.tsx`
 - `src/shared/formatTime.test.ts`
+
+---
+
+## Work Item: save-puzzles
+
+### Test Results
+- Passed: 31 new (validatePuzzle 15, savedPuzzles 9, SavedPuzzlesScreen 5, page flow 2); full suite 143
+- Failed: 0
+
+### Acceptance Criteria Validation
+- ✅ 'Opslaan' saves the puzzle with name, date, theme, size, difficulty — default name "Dieren · 21 nov"
+- ✅ 'Mijn puzzels' list: open, rename, delete (with confirmation) — inline "Weet je het zeker?"
+- ✅ Best time stored per puzzle and shown in list and on completion — incl. "🏆 Nieuw record!"
+- ✅ In-progress state (found words, elapsed time) restored when reopening — page flow test
+- ✅ Storage versioned; corrupted/old data ignored gracefully — invalid entries skipped individually
+- ✅ Tests for the storage helper
+- Extra: max 50 saved puzzles and a Dutch "storage full" message
+
+### Tests Written
+- `src/puzzles/woordzoeker/logic/validatePuzzle.test.ts`
+- `src/puzzles/woordzoeker/logic/savedPuzzles.test.ts`
+- `src/puzzles/woordzoeker/components/SavedPuzzlesScreen.test.tsx`
+- `src/puzzles/woordzoeker/WoordzoekerPage.test.tsx`

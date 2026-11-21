@@ -1,32 +1,50 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { formatTime } from '@/shared/formatTime';
 
-import { type FoundWord, leftoverCells, type Line, matchWord } from '../logic/selection';
-import type { Puzzle } from '../logic/types';
+import type { SaveResult } from '../logic/savedPuzzles';
+import { leftoverCells, type Line, matchWord } from '../logic/selection';
+import type { FoundWord, PlayProgress, Puzzle } from '../logic/types';
 import { HIGHLIGHT_COLORS, PlayGrid } from './PlayGrid';
 import styles from './PlayScreen.module.css';
 import { useTimer } from './useTimer';
 
-export interface PlayProgress {
-  found: FoundWord[];
-  elapsedMs: number;
+export interface CompletionResult {
+  bestTimeMs: number;
+  isRecord: boolean;
 }
 
 interface PlayScreenProps {
   puzzle: Puzzle;
   initialProgress?: PlayProgress;
+  /** Set when the puzzle is saved on this device. */
+  saved?: { id: string; bestTimeMs: number | null } | null;
   onProgress?: (progress: PlayProgress) => void;
+  /** Saves the puzzle; when omitted no Opslaan button is shown. */
+  onSave?: (progress: PlayProgress) => SaveResult;
+  /** Called once when all words are found (not when reopening a finished puzzle). */
+  onComplete?: (timeMs: number) => CompletionResult | null;
   onNew: () => void;
 }
 
-export function PlayScreen({ puzzle, initialProgress, onProgress, onNew }: PlayScreenProps) {
+export function PlayScreen({
+  puzzle,
+  initialProgress,
+  saved = null,
+  onProgress,
+  onSave,
+  onComplete,
+  onNew,
+}: PlayScreenProps) {
   const [found, setFound] = useState<FoundWord[]>(initialProgress?.found ?? []);
   const [started, setStarted] = useState((initialProgress?.elapsedMs ?? 0) > 0);
   const total = puzzle.words.length;
   const complete = found.length >= total;
   const [elapsed, setElapsed] = useTimer(initialProgress?.elapsedMs ?? 0, started && !complete);
   const [lastMiss, setLastMiss] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
+  const [completion, setCompletion] = useState<CompletionResult | null>(null);
+  const wasComplete = useRef(complete);
 
   const foundSet = useMemo(() => new Set(found.map((f) => f.letters)), [found]);
   const colorOf = useMemo(
@@ -41,6 +59,21 @@ export function PlayScreen({ puzzle, initialProgress, onProgress, onNew }: PlayS
   useEffect(() => {
     onProgress?.({ found, elapsedMs: elapsed });
   }, [found, elapsed, onProgress]);
+
+  useEffect(() => {
+    if (complete && !wasComplete.current) {
+      wasComplete.current = true;
+      setCompletion(onComplete?.(elapsed) ?? null);
+    }
+  }, [complete, elapsed, onComplete]);
+
+  const save = () => {
+    if (!onSave) return;
+    const result = onSave({ found, elapsedMs: elapsed });
+    setSaveError(result.ok ? null : result.reason);
+  };
+
+  const bestTimeMs = completion?.bestTimeMs ?? saved?.bestTimeMs ?? null;
 
   const select = (line: Line) => {
     const word = matchWord(puzzle, line, foundSet);
@@ -60,7 +93,15 @@ export function PlayScreen({ puzzle, initialProgress, onProgress, onNew }: PlayS
     setElapsed(0);
     setStarted(false);
     setLastMiss(false);
+    setCompletion(null);
+    wasComplete.current = false;
   };
+
+  const saveButton = onSave && (
+    <button type="button" className="btn btn-secondary" onClick={save} disabled={saved !== null}>
+      {saved ? '✓ Opgeslagen' : 'Opslaan'}
+    </button>
+  );
 
   const sortedWords = [...puzzle.words].sort((a, b) => a.display.localeCompare(b.display, 'nl'));
 
@@ -103,7 +144,17 @@ export function PlayScreen({ puzzle, initialProgress, onProgress, onNew }: PlayS
               <strong className={styles.solution}>{puzzle.solution.display}</strong>
             </p>
           )}
+          {completion?.isRecord && saved && <p className={styles.record}>🏆 Nieuw record!</p>}
+          {bestTimeMs !== null && saved && (
+            <p>
+              Beste tijd: <strong>{formatTime(bestTimeMs)}</strong>
+            </p>
+          )}
+          {!saved && onSave && (
+            <p className={styles.hint}>Sla de puzzel op om je beste tijd te bewaren.</p>
+          )}
           <div className={styles.buttons}>
+            {!saved && saveButton}
             <button type="button" className="btn btn-secondary" onClick={restart}>
               Opnieuw
             </button>
@@ -130,8 +181,15 @@ export function PlayScreen({ puzzle, initialProgress, onProgress, onNew }: PlayS
         })}
       </ul>
 
+      {saveError && (
+        <p className={styles.error} role="alert">
+          {saveError}
+        </p>
+      )}
+
       {!complete && (
         <div className={styles.buttons}>
+          {saveButton}
           <button type="button" className="btn btn-link" onClick={onNew}>
             Nieuwe puzzel
           </button>

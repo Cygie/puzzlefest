@@ -19,18 +19,18 @@ work_items:
   - id: save-puzzles
     intent: woordzoeker
     mode: confirm
-    status: in_progress
-    current_phase: plan
-    checkpoint_state: none
+    status: completed
+    current_phase: review
+    checkpoint_state: approved
     current_checkpoint: plan
   - id: share-link
     intent: woordzoeker
     mode: confirm
-    status: pending
-    current_phase: null
+    status: in_progress
+    current_phase: plan
     checkpoint_state: none
-    current_checkpoint: null
-current_item: save-puzzles
+    current_checkpoint: plan
+current_item: share-link
 status: in_progress
 started: 2026-11-21T18:48:14.502Z
 completed: null
@@ -44,12 +44,12 @@ batch (4 work items)
 ## Work Items
 1. **puzzle-setup-ui** (confirm) — completed
 2. **play-ui** (confirm) — completed
-3. **save-puzzles** (confirm) — in_progress
-4. **share-link** (confirm) — pending
+3. **save-puzzles** (confirm) — completed
+4. **share-link** (confirm) — in_progress
 
 
 ## Current Item
-save-puzzles (confirm)
+share-link (confirm)
 
 ## Files Created
 (none yet)

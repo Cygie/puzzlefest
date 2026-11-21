@@ -89,3 +89,29 @@ Completion panel: "Gefeliciteerd!", time, the solution (leftover cells highlight
 |-----------|----------|
 | `selection.test.ts` | point→cell incl. edges; snapping (straight, diagonal, off-angle, clipping); matching forwards/backwards/already found/non-word; leftover cells |
 | `PlayScreen.test.tsx` | swipe finds a word (crossed off); backwards swipe; tap-tap; wrong selection does nothing; timer starts on first touch and pauses when hidden; completion shows time + solution; Opnieuw resets |
+
+---
+
+## Work Item: save-puzzles
+
+### Approach
+
+`validatePuzzle.ts` validates any stored/received puzzle (shape + grid actually spells each word) — reused by share-link. `savedPuzzles.ts` is a typed list in versioned localStorage (`woordzoeker:saved`, max 50, newest first) with add / update progress / record completion (best time + record flag) / rename / delete, returning Dutch errors when storage is full. The page holds a small view state (setup | saved | play); progress of a saved puzzle is written throttled (on found-word change, every ~3 s, and when the app is hidden). `PlayProgress`/`FoundWord` move to `types.ts`.
+
+### Files to Create
+
+| File | Purpose |
+|------|---------|
+| `src/puzzles/woordzoeker/logic/validatePuzzle.ts` (+test) | `isPuzzle`, `isPlayProgress` |
+| `src/puzzles/woordzoeker/logic/savedPuzzles.ts` (+test) | Saved-puzzle store |
+| `src/puzzles/woordzoeker/components/SavedPuzzlesScreen.tsx` + `.module.css` (+test) | "Mijn puzzels" |
+| `src/puzzles/woordzoeker/components/useProgressSaver.ts` | Throttled progress persistence |
+
+### Files to Modify
+
+| File | Changes |
+|------|---------|
+| `logic/types.ts`, `logic/selection.ts` | Move `FoundWord`, add `PlayProgress` |
+| `components/PlayScreen.tsx` | Opslaan button, best time / record on completion |
+| `components/SetupScreen.tsx` | "Mijn puzzels (n)" link |
+| `WoordzoekerPage.tsx` | View state setup / saved / play |

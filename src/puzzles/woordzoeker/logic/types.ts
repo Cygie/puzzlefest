@@ -1,3 +1,4 @@
+import type { Cell } from './directions';
 import type { NormalizedWord } from './normalize';
 
 export type Difficulty = 'makkelijk' | 'normaal' | 'moeilijk';
@@ -66,3 +67,16 @@ export type GenerateResult =
       /** Best attempt without the failing words / without the solution word, if any. */
       partial?: Puzzle;
     };
+
+/** A found word, stored as the selected start and end cell (serializable). */
+export interface FoundWord {
+  letters: string;
+  start: Cell;
+  end: Cell;
+}
+
+/** Progress of a player on a puzzle (serializable, used for saving). */
+export interface PlayProgress {
+  found: FoundWord[];
+  elapsedMs: number;
+}

@@ -1,5 +1,7 @@
 import { type Cell, DIRECTION_VECTORS, wordCells } from './directions';
-import type { Direction, PlacedWord, Puzzle } from './types';
+import type { Direction, FoundWord, PlacedWord, Puzzle } from './types';
+
+export type { FoundWord };
 
 export interface Rect {
   left: number;
@@ -13,13 +15,6 @@ export interface Line {
   cells: Cell[];
   /** null for a single cell. */
   direction: Direction | null;
-}
-
-/** A found word, stored as the selected start and end cell (serializable). */
-export interface FoundWord {
-  letters: string;
-  start: Cell;
-  end: Cell;
 }
 
 /** Index 0 = angle 0 (east), then clockwise in 45° steps (rows grow downwards). */
