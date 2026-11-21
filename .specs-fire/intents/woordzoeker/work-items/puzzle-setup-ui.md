@@ -4,9 +4,13 @@ title: Puzzle setup screen
 intent: woordzoeker
 complexity: medium
 mode: confirm
-status: pending
-depends_on: [theme-word-lists, grid-generator]
+status: completed
+depends_on:
+  - theme-word-lists
+  - grid-generator
 created: 2026-11-21T18:25:00Z
+run_id: run-puzzlefest-003
+completed_at: 2026-11-21T18:58:19.740Z
 ---
 
 # Work Item: Puzzle setup screen

@@ -17,7 +17,7 @@ describe('App shell', () => {
       window.location.hash = '#/woordzoeker';
       window.dispatchEvent(new HashChangeEvent('hashchange'));
     });
-    expect(screen.getByRole('heading', { name: 'Woordzoeker' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Nieuwe woordzoeker' })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Woordzoeker' })).toHaveAttribute(
       'aria-current',
       'page',

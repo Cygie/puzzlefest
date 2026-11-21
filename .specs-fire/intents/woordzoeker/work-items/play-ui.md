@@ -4,8 +4,9 @@ title: Play screen (solve, timer, completion)
 intent: woordzoeker
 complexity: medium
 mode: confirm
-status: pending
-depends_on: [puzzle-setup-ui]
+status: in_progress
+depends_on:
+  - puzzle-setup-ui
 created: 2026-11-21T18:25:00Z
 ---
 
