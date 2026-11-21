@@ -11,9 +11,11 @@ const DIFFICULTY_LABEL = { makkelijk: 'Makkelijk', normaal: 'Normaal', moeilijk:
 interface SavedPuzzlesScreenProps {
   onOpen: (saved: SavedPuzzle) => void;
   onBack: () => void;
+  /** Message shown at the top, e.g. when a saved puzzle no longer exists. */
+  notice?: string | null;
 }
 
-export function SavedPuzzlesScreen({ onOpen, onBack }: SavedPuzzlesScreenProps) {
+export function SavedPuzzlesScreen({ onOpen, onBack, notice = null }: SavedPuzzlesScreenProps) {
   const [items, setItems] = useState(loadSaved);
   const [renaming, setRenaming] = useState<string | null>(null);
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
@@ -33,6 +35,12 @@ export function SavedPuzzlesScreen({ onOpen, onBack }: SavedPuzzlesScreenProps) 
         ← Nieuwe puzzel
       </button>
       <h1 className={styles.title}>Mijn puzzels</h1>
+
+      {notice && (
+        <p className={styles.error} role="alert">
+          {notice}
+        </p>
+      )}
 
       {error && (
         <p className={styles.error} role="alert">

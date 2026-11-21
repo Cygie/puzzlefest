@@ -2,16 +2,30 @@ import { useEffect, useState } from 'react';
 
 export type Route = 'home' | 'woordzoeker';
 
+/** Top-level routes by first path segment; sub-paths belong to the same page. */
 const ROUTES: Record<string, Route> = {
   '': 'home',
-  '/': 'home',
-  '/woordzoeker': 'woordzoeker',
+  woordzoeker: 'woordzoeker',
 };
 
-/** Maps a location hash such as `#/woordzoeker` to a known route (unknown → home). */
+/** Path segments of a hash, e.g. `#/woordzoeker/spel/abc?p=1` → `['woordzoeker','spel','abc']`. */
+export function parsePath(hash: string): string[] {
+  const path = hash.replace(/^#\/?/, '').split('?')[0] ?? '';
+  return path
+    .split('/')
+    .filter(Boolean)
+    .map((segment) => {
+      try {
+        return decodeURIComponent(segment);
+      } catch {
+        return segment;
+      }
+    });
+}
+
+/** Maps a location hash such as `#/woordzoeker/mijn` to its top-level route (unknown → home). */
 export function parseHash(hash: string): Route {
-  const path = hash.replace(/^#/, '').split('?')[0] ?? '';
-  return ROUTES[path] ?? 'home';
+  return ROUTES[parsePath(hash)[0] ?? ''] ?? 'home';
 }
 
 export function hrefFor(route: Route, params?: Record<string, string>): string {
@@ -32,17 +46,46 @@ export function getHashParam(name: string, hash: string = window.location.hash):
 }
 
 /**
+ * Goes to a hash. By default this adds a history entry (so the back button returns);
+ * with `replace` the current entry is replaced instead.
+ */
+export function navigate(hash: string, { replace = false }: { replace?: boolean } = {}): void {
+  if (replace) {
+    window.history.replaceState(window.history.state, '', hash);
+    // replaceState does not fire hashchange; notify listeners ourselves.
+    window.dispatchEvent(new HashChangeEvent('hashchange'));
+  } else if (window.location.hash !== hash) {
+    window.location.hash = hash;
+  }
+}
+
+function useHashValue<T>(read: (hash: string) => T, key: (value: T) => string): T {
+  const [value, setValue] = useState<T>(() => read(window.location.hash));
+
+  useEffect(() => {
+    const onChange = () => {
+      const next = read(window.location.hash);
+      setValue((current) => (key(current) === key(next) ? current : next));
+    };
+    window.addEventListener('hashchange', onChange);
+    return () => window.removeEventListener('hashchange', onChange);
+  }, [read, key]);
+
+  return value;
+}
+
+const identity = (route: Route) => route;
+const joinPath = (path: string[]) => path.join('/');
+
+/**
  * Minimal hash-based router: works on any static host and inside the installed PWA
  * without server-side rewrites.
  */
 export function useHashRoute(): Route {
-  const [route, setRoute] = useState<Route>(() => parseHash(window.location.hash));
+  return useHashValue(parseHash, identity);
+}
 
-  useEffect(() => {
-    const onChange = () => setRoute(parseHash(window.location.hash));
-    window.addEventListener('hashchange', onChange);
-    return () => window.removeEventListener('hashchange', onChange);
-  }, []);
-
-  return route;
+/** Current hash path segments; updates on navigation (incl. the back button). */
+export function useHashPath(): string[] {
+  return useHashValue(parsePath, joinPath);
 }

@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
-import { absoluteHref, getHashParam, hrefFor } from '@/app/useHashRoute';
+import { absoluteHref, getHashParam, navigate, useHashPath } from '@/app/useHashRoute';
 
 import { PlayScreen } from './components/PlayScreen';
 import { SavedPuzzlesScreen } from './components/SavedPuzzlesScreen';
@@ -10,126 +10,186 @@ import { loadSaved, recordCompletion, savePuzzle } from './logic/savedPuzzles';
 import { decodePuzzle, encodePuzzle } from './logic/shareCode';
 import type { PlayProgress, Puzzle } from './logic/types';
 
-type View =
-  | { kind: 'setup' }
-  | { kind: 'saved' }
-  | {
-      kind: 'play';
-      /** Remount key: a different puzzle gets a fresh PlayScreen. */
-      key: string;
-      puzzle: Puzzle;
-      saved: { id: string; bestTimeMs: number | null } | null;
-      initialProgress?: PlayProgress;
-    };
+/**
+ * Screens have their own hash routes so the browser history (Android back button)
+ * moves between them:
+ *   #/woordzoeker            setup
+ *   #/woordzoeker/mijn       Mijn puzzels
+ *   #/woordzoeker/spel       unsaved puzzle (kept in memory)
+ *   #/woordzoeker/spel/<id>  saved puzzle (loaded from storage, survives reload)
+ */
+export const ROUTE_SETUP = '#/woordzoeker';
+export const ROUTE_SAVED = '#/woordzoeker/mijn';
+export const ROUTE_PLAY = '#/woordzoeker/spel';
+export const routeSaved = (id: string) => `${ROUTE_PLAY}/${encodeURIComponent(id)}`;
+
+const INVALID_LINK = 'Deze link is ongeldig of beschadigd. Maak hieronder een nieuwe puzzel.';
+const MISSING_SAVED = 'Deze puzzel is niet (meer) opgeslagen op dit apparaat.';
+
+/** The puzzle being played that is not (or only just) saved. */
+interface Memory {
+  /** Remount key: a different puzzle gets a fresh PlayScreen. */
+  key: string;
+  puzzle: Puzzle;
+  savedId: string | null;
+}
 
 let playCounter = 0;
 
-const INVALID_LINK = 'Deze link is ongeldig of beschadigd. Maak hieronder een nieuwe puzzel.';
+interface LinkResult {
+  memory: Memory | null;
+  notice: string | null;
+}
 
-/** Opens a puzzle from `#/woordzoeker?p=…` (if present) and cleans up the address. */
-function viewFromLink(): { view: View; notice: string | null } | null {
+/**
+ * Handles a share link (`#/woordzoeker?p=…`): decodes it and replaces the address with
+ * the play route (or setup when invalid). Returns null when there is no link.
+ */
+function takeShareLink(): LinkResult | null {
   const code = getHashParam('p');
   if (code === null) return null;
-  window.history.replaceState(null, '', hrefFor('woordzoeker'));
   const puzzle = decodePuzzle(code);
-  if (!puzzle) return { view: { kind: 'setup' }, notice: INVALID_LINK };
-  return {
-    view: { kind: 'play', key: `link-${++playCounter}`, puzzle, saved: null },
-    notice: null,
-  };
+  const target = puzzle ? ROUTE_PLAY : ROUTE_SETUP;
+  window.history.replaceState(window.history.state, '', target);
+  return puzzle
+    ? { memory: { key: `link-${++playCounter}`, puzzle, savedId: null }, notice: null }
+    : { memory: null, notice: INVALID_LINK };
 }
 
 export function WoordzoekerPage() {
-  const [initial] = useState(viewFromLink);
-  const [view, setView] = useState<View>(initial?.view ?? { kind: 'setup' });
-  const [notice, setNotice] = useState<string | null>(initial?.notice ?? null);
+  // Must run before useHashPath reads the address.
+  const [initialLink] = useState(takeShareLink);
+  const [memory, setMemory] = useState<Memory | null>(initialLink?.memory ?? null);
+  const [notice, setNotice] = useState<string | null>(initialLink?.notice ?? null);
+  const [bestTimes, setBestTimes] = useState<Record<string, number>>({});
+  // Progress of unsaved puzzles, so back → forward resumes instead of restarting.
+  const memoryProgress = useRef<Record<string, PlayProgress>>({});
+  const path = useHashPath();
 
-  // A link opened while the app is already showing this page.
+  // A share link opened while this page is already showing.
   useEffect(() => {
     const onHashChange = () => {
-      const fromLink = viewFromLink();
-      if (fromLink) {
-        setView(fromLink.view);
-        setNotice(fromLink.notice);
-      }
+      const link = takeShareLink();
+      if (!link) return;
+      if (link.memory) setMemory(link.memory);
+      setNotice(link.notice);
+      window.dispatchEvent(new HashChangeEvent('hashchange'));
     };
     window.addEventListener('hashchange', onHashChange);
     return () => window.removeEventListener('hashchange', onHashChange);
   }, []);
 
-  const playPuzzle = view.kind === 'play' ? view.puzzle : null;
+  const screen = path[1];
+  const routeId = screen === 'spel' ? (path[2] ?? null) : null;
+
+  // Saved puzzle for /spel/<id>: a snapshot is enough, it only seeds the play screen.
+  const savedItem = useMemo(
+    () => (routeId ? (loadSaved().find((item) => item.id === routeId) ?? null) : null),
+    [routeId],
+  );
+
+  let play: { key: string; puzzle: Puzzle; savedId: string | null } | null = null;
+  if (screen === 'spel') {
+    if (routeId && memory?.savedId === routeId) play = memory;
+    else if (routeId && savedItem)
+      play = { key: savedItem.id, puzzle: savedItem.puzzle, savedId: savedItem.id };
+    else if (!routeId && memory) play = memory;
+  }
+  const redirect = screen === 'spel' && !play ? (routeId ? ROUTE_SAVED : ROUTE_SETUP) : null;
+
+  useEffect(() => {
+    if (!redirect) return;
+    if (redirect === ROUTE_SAVED) setNotice(MISSING_SAVED);
+    navigate(redirect, { replace: true });
+  }, [redirect]);
+
+  const savedId = play?.savedId ?? null;
+  const { onProgress: saveProgress, flush } = useProgressSaver(savedId);
+  const playKey = play?.key ?? null;
+  const onProgress = useCallback(
+    (progress: PlayProgress) => {
+      if (playKey) memoryProgress.current[playKey] = progress;
+      saveProgress(progress);
+    },
+    [playKey, saveProgress],
+  );
+
+  const playPuzzle = play?.puzzle ?? null;
   const shareUrl = useMemo(
     () => (playPuzzle ? absoluteHref('woordzoeker', { p: encodePuzzle(playPuzzle) }) : undefined),
     [playPuzzle],
   );
-  const savedId = view.kind === 'play' ? (view.saved?.id ?? null) : null;
-  const { onProgress, flush } = useProgressSaver(savedId);
 
   const onComplete = useCallback(
     (timeMs: number) => {
       if (!savedId) return null;
       flush();
       const result = recordCompletion(savedId, timeMs);
-      if (result) {
-        setView((v) =>
-          v.kind === 'play' && v.saved
-            ? { ...v, saved: { ...v.saved, bestTimeMs: result.bestTimeMs } }
-            : v,
-        );
-      }
+      if (result) setBestTimes((times) => ({ ...times, [savedId]: result.bestTimeMs }));
       return result;
     },
     [savedId, flush],
   );
 
-  if (view.kind === 'saved') {
+  if (redirect) return null;
+
+  if (screen === 'mijn') {
     return (
       <SavedPuzzlesScreen
-        onBack={() => setView({ kind: 'setup' })}
-        onOpen={(item) =>
-          setView({
-            kind: 'play',
-            key: item.id,
-            puzzle: item.puzzle,
-            saved: { id: item.id, bestTimeMs: item.bestTimeMs },
-            initialProgress: item.progress,
-          })
-        }
-      />
-    );
-  }
-
-  if (view.kind === 'setup') {
-    return (
-      <SetupScreen
         notice={notice}
-        savedCount={loadSaved().length}
-        onShowSaved={() => setView({ kind: 'saved' })}
-        onGenerated={(puzzle) => {
+        onBack={() => navigate(ROUTE_SETUP)}
+        onOpen={(item) => {
           setNotice(null);
-          setView({ kind: 'play', key: `new-${++playCounter}`, puzzle, saved: null });
+          navigate(routeSaved(item.id));
         }}
       />
     );
   }
 
-  return (
-    <PlayScreen
-      key={view.key}
-      puzzle={view.puzzle}
-      initialProgress={view.initialProgress}
-      saved={view.saved}
-      onProgress={onProgress}
-      onSave={(progress) => {
-        const result = savePuzzle(view.puzzle, progress);
-        if (result.ok) {
-          setView({ ...view, saved: { id: result.saved.id, bestTimeMs: null } });
+  if (play) {
+    const bestTimeMs =
+      savedId === null ? null : (bestTimes[savedId] ?? savedItem?.bestTimeMs ?? null);
+    return (
+      <PlayScreen
+        key={play.key}
+        puzzle={play.puzzle}
+        initialProgress={
+          savedItem && savedItem.id === savedId
+            ? savedItem.progress
+            : memoryProgress.current[play.key]
         }
-        return result;
+        saved={savedId ? { id: savedId, bestTimeMs } : null}
+        onProgress={onProgress}
+        onSave={(progress) => {
+          const current = play;
+          const result = savePuzzle(current.puzzle, progress);
+          if (result.ok) {
+            setMemory({ key: current.key, puzzle: current.puzzle, savedId: result.saved.id });
+            // Same game, now saved: replace the address without a new history entry.
+            navigate(routeSaved(result.saved.id), { replace: true });
+          }
+          return result;
+        }}
+        onComplete={onComplete}
+        shareUrl={shareUrl}
+        onNew={() => navigate(ROUTE_SETUP)}
+      />
+    );
+  }
+
+  return (
+    <SetupScreen
+      notice={notice}
+      savedCount={loadSaved().length}
+      onShowSaved={() => {
+        setNotice(null);
+        navigate(ROUTE_SAVED);
       }}
-      onComplete={onComplete}
-      shareUrl={shareUrl}
-      onNew={() => setView({ kind: 'setup' })}
+      onGenerated={(puzzle) => {
+        setNotice(null);
+        setMemory({ key: `new-${++playCounter}`, puzzle, savedId: null });
+        navigate(ROUTE_PLAY);
+      }}
     />
   );
 }

@@ -1,8 +1,9 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { loadSaved, savePuzzle } from './logic/savedPuzzles';
+import { loadSaved, savePuzzle, updateProgress } from './logic/savedPuzzles';
+import { encodePuzzle } from './logic/shareCode';
 import { TEST_PUZZLE } from './logic/testPuzzle';
 import { WoordzoekerPage } from './WoordzoekerPage';
 
@@ -91,7 +92,7 @@ describe('WoordzoekerPage – share links', () => {
     window.location.hash = `#/woordzoeker?p=${encodePuzzle(TEST_PUZZLE)}`;
     render(<WoordzoekerPage />);
     expect(screen.getByText('0 / 3')).toBeInTheDocument();
-    expect(window.location.hash).toBe('#/woordzoeker');
+    expect(window.location.hash).toBe('#/woordzoeker/spel');
     swipe([0, 0], [0, 2]);
     expect(screen.getByText('1 / 3')).toBeInTheDocument();
   });
@@ -122,5 +123,110 @@ describe('WoordzoekerPage – share links', () => {
     window.location.hash = url.hash;
     render(<WoordzoekerPage />);
     expect(screen.getByRole('img', { name: /Woordzoeker van/ }).textContent).toBe(grid);
+  });
+});
+
+describe('WoordzoekerPage – back button navigation', () => {
+  afterEach(() => {
+    window.location.hash = '';
+  });
+
+  const back = async () => {
+    await act(async () => {
+      window.history.back();
+      await new Promise((resolve) => setTimeout(resolve, 20));
+    });
+  };
+
+  const KAT = { letters: 'KAT', start: { row: 0, col: 0 }, end: { row: 0, col: 2 } };
+
+  function seedSaved(found = [KAT]) {
+    const result = savePuzzle(TEST_PUZZLE, { found: [], elapsedMs: 0 });
+    if (!result.ok) throw new Error(result.reason);
+    updateProgress(result.saved.id, { found, elapsedMs: 12_000 });
+    return result.saved;
+  }
+
+  it('goes back from the play screen to setup', async () => {
+    window.location.hash = '#/woordzoeker';
+    const user = userEvent.setup();
+    render(<WoordzoekerPage />);
+    await user.type(screen.getByLabelText('Woord toevoegen'), 'kat, hond{Enter}');
+    await user.click(screen.getByRole('button', { name: 'Genereer' }));
+    await waitFor(() => expect(window.location.hash).toBe('#/woordzoeker/spel'));
+    expect(screen.getByText('0 / 2')).toBeInTheDocument();
+
+    await back();
+    await waitFor(() =>
+      expect(screen.getByRole('heading', { name: 'Nieuwe woordzoeker' })).toBeInTheDocument(),
+    );
+    expect(window.location.hash).toBe('#/woordzoeker');
+  });
+
+  it('goes back from a saved puzzle to Mijn puzzels and then to setup', async () => {
+    const saved = seedSaved();
+    window.location.hash = '#/woordzoeker';
+    const user = userEvent.setup();
+    render(<WoordzoekerPage />);
+
+    await user.click(screen.getByRole('button', { name: 'Mijn puzzels (1)' }));
+    await waitFor(() => expect(window.location.hash).toBe('#/woordzoeker/mijn'));
+    await user.click(await screen.findByRole('button', { name: `${saved.name} spelen` }));
+    await waitFor(() => expect(window.location.hash).toBe(`#/woordzoeker/spel/${saved.id}`));
+    expect(await screen.findByText('1 / 3')).toBeInTheDocument();
+
+    await back();
+    expect(await screen.findByRole('heading', { name: 'Mijn puzzels' })).toBeInTheDocument();
+    await back();
+    expect(await screen.findByRole('heading', { name: 'Nieuwe woordzoeker' })).toBeInTheDocument();
+  });
+
+  it('keeps playing when saving and replaces the address without a new history entry', async () => {
+    window.location.hash = `#/woordzoeker?p=${encodePuzzle(TEST_PUZZLE)}`;
+    const user = userEvent.setup();
+    render(<WoordzoekerPage />);
+    swipe([0, 0], [0, 2]);
+    const entries = window.history.length;
+
+    await user.click(screen.getByRole('button', { name: 'Opslaan' }));
+    const id = loadSaved()[0]!.id;
+    await waitFor(() => expect(window.location.hash).toBe(`#/woordzoeker/spel/${id}`));
+    expect(window.history.length).toBe(entries);
+    expect(screen.getByText('1 / 3')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: '✓ Opgeslagen' })).toBeInTheDocument();
+  });
+
+  it('reopens a saved puzzle with progress after a reload', () => {
+    const saved = seedSaved();
+    window.location.hash = `#/woordzoeker/spel/${saved.id}`;
+    render(<WoordzoekerPage />);
+    expect(screen.getByText('1 / 3')).toBeInTheDocument();
+    expect(screen.getByLabelText('Tijd 0:12')).toBeInTheDocument();
+  });
+
+  it('sends /spel without a puzzle in memory to setup', async () => {
+    window.location.hash = '#/woordzoeker/spel';
+    render(<WoordzoekerPage />);
+    await waitFor(() => expect(window.location.hash).toBe('#/woordzoeker'));
+    expect(await screen.findByRole('heading', { name: 'Nieuwe woordzoeker' })).toBeInTheDocument();
+  });
+
+  it('explains when a saved puzzle no longer exists', async () => {
+    window.location.hash = '#/woordzoeker/spel/bestaat-niet';
+    render(<WoordzoekerPage />);
+    expect(await screen.findByRole('heading', { name: 'Mijn puzzels' })).toBeInTheDocument();
+    expect(screen.getByRole('alert')).toHaveTextContent('niet (meer) opgeslagen');
+  });
+
+  it('resumes an unsaved puzzle after back and forward', async () => {
+    window.location.hash = `#/woordzoeker?p=${encodePuzzle(TEST_PUZZLE)}`;
+    const user = userEvent.setup();
+    render(<WoordzoekerPage />);
+    swipe([0, 0], [0, 2]);
+    await user.click(screen.getByRole('button', { name: 'Nieuwe puzzel' }));
+    expect(await screen.findByRole('heading', { name: 'Nieuwe woordzoeker' })).toBeInTheDocument();
+
+    await back();
+    expect(await screen.findByText('1 / 3')).toBeInTheDocument();
   });
 });

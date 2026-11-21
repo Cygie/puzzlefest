@@ -2,7 +2,7 @@ import { act, render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
 import { App } from './App';
-import { parseHash } from './useHashRoute';
+import { parseHash, parsePath } from './useHashRoute';
 
 describe('App shell', () => {
   it('shows the Dutch home page by default', () => {
@@ -32,5 +32,27 @@ describe('parseHash', () => {
     expect(parseHash('#/woordzoeker')).toBe('woordzoeker');
     expect(parseHash('#/woordzoeker?p=abc')).toBe('woordzoeker');
     expect(parseHash('#/bestaat-niet')).toBe('home');
+    expect(parseHash('#/woordzoeker/mijn')).toBe('woordzoeker');
+    expect(parseHash('#/woordzoeker/spel/abc')).toBe('woordzoeker');
+  });
+});
+
+describe('parsePath', () => {
+  it('splits the hash into decoded segments', () => {
+    expect(parsePath('')).toEqual([]);
+    expect(parsePath('#/')).toEqual([]);
+    expect(parsePath('#/woordzoeker/spel/a%20b?p=1')).toEqual(['woordzoeker', 'spel', 'a b']);
+  });
+});
+
+describe('App shell – sub-routes', () => {
+  it('keeps the Woordzoeker menu item active on sub-routes', () => {
+    window.location.hash = '#/woordzoeker/mijn';
+    render(<App />);
+    expect(screen.getByRole('link', { name: 'Woordzoeker' })).toHaveAttribute(
+      'aria-current',
+      'page',
+    );
+    expect(screen.getByRole('heading', { name: 'Mijn puzzels' })).toBeInTheDocument();
   });
 });

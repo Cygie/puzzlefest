@@ -107,6 +107,18 @@ intents:
           - play-ui
         run_id: run-puzzlefest-003
         completed_at: 2026-11-21T19:25:41.924Z
+  - id: navigatie
+    title: Navigatie met de terugknop
+    status: completed
+    work_items:
+      - id: hash-routes-woordzoeker
+        title: Hash routes for Woordzoeker screens
+        status: completed
+        complexity: medium
+        mode: confirm
+        depends_on: []
+        run_id: run-puzzlefest-005
+        completed_at: 2026-11-21T19:41:47.182Z
 runs:
   active: []
   completed:
@@ -157,3 +169,11 @@ runs:
           mode: autopilot
       started: 2026-11-21T19:27:00.153Z
       completed: 2026-11-21T19:29:00.263Z
+    - id: run-puzzlefest-005
+      scope: single
+      work_items:
+        - id: hash-routes-woordzoeker
+          intent: navigatie
+          mode: confirm
+      started: 2026-11-21T19:36:48.503Z
+      completed: 2026-11-21T19:41:47.182Z
