@@ -8,4 +8,5 @@
   - Print CSS: `.shell { min-height: 0; display: block }`, `:root/html/body { height: auto; min-height: 0; background: #fff }`.
   - `printCellSize()` sizes grid cells from the remaining page budget (240 mm, fits A4 and Letter) after title, word list and solution blanks; `.page { break-inside: avoid }`.
 - **Verified:** headless Chromium print-to-PDF of 10×10, 20×20 (25 words) and 10×10 with solution word → 1 A4 page each; 8 new tests (one-page budget for 7 size/word combinations).
+- **Confirmed by user:** print on their device now gives 1 page.
 - **Related work item:** woordzoeker/print-view (run-puzzlefest-004)

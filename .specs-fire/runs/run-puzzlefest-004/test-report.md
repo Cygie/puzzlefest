@@ -22,7 +22,7 @@ status: passed
 - ✅ **A4 portrait: title/theme, bordered grid, word list, solution blanks** — grid sized in mm (max 180 × 175 mm, 12 mm cells max); 20×20 → 175 mm wide
 - ✅ **Optional answers page** — "Met antwoorden" checkbox; page break; every word outlined, solution letters shaded
 - ✅ **No app chrome in print output** — header and interactive UI hidden via `.no-print` / print CSS
-- ⚠️ **Actual printed result** — not verifiable here (headless Chromium hangs on the Pi); manual print preview check pending
+- ✅ **Actual printed result** — verified via headless print-to-PDF and confirmed by the user on their device (after fix 408459e)
 
 ## Tests Written
 
