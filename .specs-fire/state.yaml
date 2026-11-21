@@ -47,11 +47,13 @@ intents:
         completed_at: 2026-11-21T18:17:48.543Z
       - id: grid-generator
         title: Grid generator (placement, difficulty, solution word)
-        status: pending
+        status: completed
         complexity: high
         mode: validate
         depends_on:
           - word-normalization
+        run_id: run-puzzlefest-002
+        completed_at: 2026-11-21T18:43:38.481Z
       - id: puzzle-setup-ui
         title: Puzzle setup screen
         status: pending
@@ -106,3 +108,11 @@ runs:
           mode: autopilot
       started: 2026-11-21T18:11:05.928Z
       completed: 2026-11-21T18:17:48.543Z
+    - id: run-puzzlefest-002
+      scope: single
+      work_items:
+        - id: grid-generator
+          intent: woordzoeker
+          mode: validate
+      started: 2026-11-21T18:34:44.825Z
+      completed: 2026-11-21T18:43:38.481Z
