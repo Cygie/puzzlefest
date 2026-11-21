@@ -4,9 +4,39 @@ import { leftoverCells } from '../logic/selection';
 import type { Puzzle } from '../logic/types';
 import styles from './PrintSheet.module.css';
 
-/** Printable area of A4 portrait with 15 mm margins, minus room for title and word list. */
-const MAX_GRID_WIDTH_MM = 180;
-const MAX_GRID_HEIGHT_MM = 175;
+/**
+ * Page budget in mm. 15 mm margins leave 180 × 267 mm on A4; the height budget is kept
+ * below US Letter (249 mm) too, in case the print dialog uses another paper size.
+ */
+const PAGE_WIDTH_MM = 180;
+const PAGE_HEIGHT_MM = 240;
+const MAX_CELL_MM = 12;
+// Approximate heights of the parts around the grid (see PrintSheet.module.css).
+const HEADER_MM = 22; // title + subtitle
+const LIST_HEADING_MM = 16;
+const WORD_ROW_MM = 6.5; // one row of the 4-column word list
+const WORD_COLUMNS = 4;
+const SOLUTION_ROW_MM = 16;
+const BLANKS_PER_ROW = 20;
+const SAFETY_MM = 8;
+
+/** Largest cell size (mm) so the whole page fits on one sheet. */
+export function printCellSize(
+  width: number,
+  height: number,
+  wordCount: number,
+  solutionLength: number,
+): number {
+  const listRows = Math.ceil(wordCount / WORD_COLUMNS);
+  const solutionRows = solutionLength > 0 ? Math.ceil((solutionLength + 2) / BLANKS_PER_ROW) : 0;
+  const reserved =
+    HEADER_MM +
+    (wordCount > 0 ? LIST_HEADING_MM + listRows * WORD_ROW_MM : 0) +
+    solutionRows * SOLUTION_ROW_MM +
+    SAFETY_MM;
+  const gridHeight = PAGE_HEIGHT_MM - reserved;
+  return Math.min(PAGE_WIDTH_MM / width, gridHeight / height, MAX_CELL_MM);
+}
 
 const DIFFICULTY_LABEL = { makkelijk: 'Makkelijk', normaal: 'Normaal', moeilijk: 'Moeilijk' };
 
@@ -28,7 +58,15 @@ export function PrintSheet({ puzzle, withAnswers }: PrintSheetProps) {
       <section className={styles.page}>
         <h1 className={styles.title}>Woordzoeker</h1>
         <p className={styles.subtitle}>{subtitle}</p>
-        <PrintGrid puzzle={puzzle} />
+        <PrintGrid
+          puzzle={puzzle}
+          cellMm={printCellSize(
+            puzzle.width,
+            puzzle.height,
+            words.length,
+            puzzle.solution?.letters.length ?? 0,
+          )}
+        />
         <h2 className={styles.heading}>Zoek deze woorden</h2>
         <ul className={styles.words} aria-label="Woordenlijst (afdruk)">
           {words.map((w) => (
@@ -57,7 +95,11 @@ export function PrintSheet({ puzzle, withAnswers }: PrintSheetProps) {
         <section className={`${styles.page} ${styles.answers}`} data-testid="answer-page">
           <h1 className={styles.title}>Antwoorden</h1>
           <p className={styles.subtitle}>{subtitle}</p>
-          <PrintGrid puzzle={puzzle} showAnswers />
+          <PrintGrid
+            puzzle={puzzle}
+            cellMm={printCellSize(puzzle.width, puzzle.height, 0, puzzle.solution ? 1 : 0)}
+            showAnswers
+          />
           {puzzle.solution && (
             <p className={styles.answerSolution}>
               Oplossing: <strong>{puzzle.solution.display}</strong>
@@ -69,9 +111,14 @@ export function PrintSheet({ puzzle, withAnswers }: PrintSheetProps) {
   );
 }
 
-function PrintGrid({ puzzle, showAnswers = false }: { puzzle: Puzzle; showAnswers?: boolean }) {
+interface PrintGridProps {
+  puzzle: Puzzle;
+  cellMm: number;
+  showAnswers?: boolean;
+}
+
+function PrintGrid({ puzzle, cellMm, showAnswers = false }: PrintGridProps) {
   const { width, height } = puzzle;
-  const cellMm = Math.min(MAX_GRID_WIDTH_MM / width, MAX_GRID_HEIGHT_MM / height, 12);
   const solution = new Set(
     showAnswers && puzzle.solution ? leftoverCells(puzzle).map((c) => c.row * width + c.col) : [],
   );

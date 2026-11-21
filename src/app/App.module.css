@@ -51,6 +51,13 @@
 }
 
 @media print {
+  /* 100dvh can resolve to the full sheet height when printing, which would push the
+     page content over its margins and add an empty second page. */
+  .shell {
+    display: block;
+    min-height: 0;
+  }
+
   .header {
     display: none;
   }

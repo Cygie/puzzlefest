@@ -139,7 +139,11 @@ a {
     display: none !important;
   }
 
+  :root,
+  html,
   body {
+    min-height: 0;
+    height: auto;
     background: #fff;
   }
 }
