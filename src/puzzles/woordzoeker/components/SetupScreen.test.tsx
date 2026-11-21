@@ -1,4 +1,4 @@
-import { render, screen, within } from '@testing-library/react';
+import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
@@ -91,14 +91,55 @@ describe('SetupScreen', () => {
     expect(screen.getByText(/Nog \d+ letters nodig/)).toBeInTheDocument();
   });
 
+  it('refills an untouched theme list when a solution word is added', async () => {
+    const { user } = setup();
+    await user.click(screen.getByRole('radio', { name: 'Dieren' }));
+    const before = listedWords();
+    await user.type(screen.getByLabelText(/De letters die overblijven/), 'klaar');
+    // With a solution the list covers about half the grid; the rest comes from the theme.
+    expect(listedWords()).not.toEqual(before);
+    expect(screen.getByText(/aangevuld met woorden uit het thema/)).toBeInTheDocument();
+    expect(screen.getByLabelText(/De letters die overblijven/)).toHaveValue('klaar');
+  });
+
+  it('keeps an edited theme list when a solution word is added', async () => {
+    const { user } = setup();
+    await user.click(screen.getByRole('radio', { name: 'Dieren' }));
+    await addWords(user, 'eenhoorn');
+    const before = listedWords();
+    await user.type(screen.getByLabelText(/De letters die overblijven/), 'klaar');
+    expect(listedWords()).toEqual(before);
+  });
+
+  it('generates a puzzle with a solution word topped up from the theme', async () => {
+    const { user, onGenerated } = setup();
+    await user.click(screen.getByRole('radio', { name: 'Dieren' }));
+    await user.type(screen.getByLabelText(/De letters die overblijven/), 'Goed gedaan');
+    const listed = listedWords();
+    await user.click(screen.getByRole('button', { name: 'Genereer' }));
+    await waitFor(() => expect(onGenerated).toHaveBeenCalledTimes(1), { timeout: 10_000 });
+    const puzzle = onGenerated.mock.calls[0]![0];
+    expect(puzzle.solution?.letters).toBe('GOEDGEDAAN');
+    expect(puzzle.words.length).toBeGreaterThan(listed.length);
+  }, 15_000);
+
   it('generates a puzzle', async () => {
     const { user, onGenerated } = setup();
     await addWords(user, 'kat, hond, vis');
     await user.click(screen.getByRole('button', { name: 'Genereer' }));
-    expect(onGenerated).toHaveBeenCalledTimes(1);
+    await waitFor(() => expect(onGenerated).toHaveBeenCalledTimes(1), { timeout: 10_000 });
     const puzzle = onGenerated.mock.calls[0]![0];
     expect(puzzle.words.map((w) => w.letters)).toEqual(['KAT', 'HOND', 'VIS']);
     expect(puzzle.grid).toHaveLength(10);
+  });
+
+  it('shows a busy button while generating', async () => {
+    const { user, onGenerated } = setup();
+    await addWords(user, 'kat, hond');
+    await user.click(screen.getByRole('button', { name: 'Genereer' }));
+    expect(screen.getByRole('button', { name: 'Puzzel maken…' })).toBeDisabled();
+    await waitFor(() => expect(onGenerated).toHaveBeenCalledTimes(1));
+    expect(screen.getByRole('button', { name: 'Genereer' })).toBeEnabled();
   });
 
   it('disables Genereer without words', () => {
@@ -116,7 +157,7 @@ describe('SetupScreen', () => {
     }
     await addWords(user, 'kat, brandweerman');
     await user.click(screen.getByRole('button', { name: 'Genereer' }));
-    expect(screen.getByText('1 woord past niet in de puzzel.')).toBeInTheDocument();
+    expect(await screen.findByText('1 woord past niet in de puzzel.')).toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: 'Doorgaan zonder deze woorden' }));
     expect(onGenerated.mock.calls[0]![0].words.map((w) => w.letters)).toEqual(['KAT']);
   });

@@ -7,8 +7,11 @@ import { normalizeWordList, toGridLetters } from './normalize';
 import {
   DEFAULT_SETTINGS,
   isSetupSettings,
+  PLAIN_MAX_FILL,
+  SOLUTION_LIST_SHARE,
   solutionStatus,
   suggestWordCount,
+  themeExtras,
   wordsFromTheme,
 } from './setupSettings';
 
@@ -30,7 +33,20 @@ describe('wordsFromTheme', () => {
     for (const w of words) expect(toGridLetters(w).length).toBeLessThanOrEqual(6);
   });
 
-  it('picks words that fill the grid minus the solution', () => {
+  it('keeps the grid from getting too full without a solution', () => {
+    const beroepen = getTheme('beroepen')!; // many long words
+    for (let seed = 1; seed <= 20; seed++) {
+      const words = wordsFromTheme(beroepen, {
+        width: 12,
+        height: 12,
+        solution: '',
+        rng: createRng(seed),
+      });
+      expect(lettersOf(words)).toBeLessThanOrEqual(144 * PLAIN_MAX_FILL);
+    }
+  });
+
+  it('with a solution, picks words for about half the cells to cover', () => {
     for (let seed = 1; seed <= 10; seed++) {
       const words = wordsFromTheme(dieren, {
         width: 10,
@@ -38,11 +54,23 @@ describe('wordsFromTheme', () => {
         solution: 'Goed gedaan',
         rng: createRng(seed),
       });
-      const target = 100 - 10;
+      const target = (100 - 10) * SOLUTION_LIST_SHARE;
       const letters = lettersOf(words);
       expect(letters).toBeGreaterThanOrEqual(target);
-      expect(letters - target).toBeLessThanOrEqual(12);
+      expect(letters - target).toBeLessThan(10); // at most one word more than needed
     }
+  });
+});
+
+describe('themeExtras', () => {
+  it('returns the theme words that are not listed and fit the grid', () => {
+    const listed = normalizeWordList(['kat', 'Hond']).words;
+    const extras = themeExtras(dieren, listed, 6, 5);
+    const letters = extras.map((w) => w.letters);
+    expect(letters).not.toContain('KAT');
+    expect(letters).not.toContain('HOND');
+    expect(letters).toContain('KOE');
+    for (const w of extras) expect(w.letters.length).toBeLessThanOrEqual(6);
   });
 });
 
@@ -71,6 +99,23 @@ describe('solutionStatus', () => {
     const status = solutionStatus(many, 5, 5, 'klaar');
     expect(status).toMatchObject({ kind: 'warning' });
     if (status.kind === 'warning') expect(status.message).toContain('te veel');
+  });
+
+  it('counts theme words that can be added', () => {
+    const extras = words('olifant', 'giraffe', 'zebra');
+    expect(solutionStatus(words('uil'), 5, 5, 'klaar', extras)).toEqual({
+      kind: 'ok',
+      message:
+        '✓ Past: de puzzel wordt aangevuld met woorden uit het thema; de overgebleven ' +
+        'letters vormen je oplossing.',
+    });
+  });
+
+  it('says when the theme has too few words for the grid', () => {
+    expect(solutionStatus(words('uil'), 5, 5, 'klaar', words('kat'))).toMatchObject({
+      kind: 'error',
+      message: expect.stringContaining('Dit thema heeft niet genoeg woorden'),
+    });
   });
 
   it('reports invalid characters', () => {

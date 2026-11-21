@@ -49,7 +49,7 @@ describe('WoordzoekerPage – saving', () => {
 
     await user.type(screen.getByLabelText('Woord toevoegen'), 'kat, hond{Enter}');
     await user.click(screen.getByRole('button', { name: 'Genereer' }));
-    await user.click(screen.getByRole('button', { name: 'Opslaan' }));
+    await user.click(await screen.findByRole('button', { name: 'Opslaan' }));
     expect(screen.getByRole('button', { name: '✓ Opgeslagen' })).toBeDisabled();
     expect(loadSaved()).toHaveLength(1);
 
@@ -112,7 +112,7 @@ describe('WoordzoekerPage – share links', () => {
     const { unmount } = render(<WoordzoekerPage />);
     await user.type(screen.getByLabelText('Woord toevoegen'), 'kat, hond, vis{Enter}');
     await user.click(screen.getByRole('button', { name: 'Genereer' }));
-    const grid = screen.getByRole('img', { name: /Woordzoeker van/ }).textContent;
+    const grid = (await screen.findByRole('img', { name: /Woordzoeker van/ })).textContent;
 
     await user.click(screen.getByRole('button', { name: 'Delen' }));
     expect(await screen.findByText(/Link gekopieerd!/)).toBeInTheDocument();

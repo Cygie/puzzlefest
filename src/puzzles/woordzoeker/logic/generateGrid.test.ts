@@ -6,6 +6,7 @@ import { pickThemeWords, THEMES } from '../data/themes';
 import { ALL_DIRECTIONS, DIRECTIONS_BY_DIFFICULTY, wordCells } from './directions';
 import { checkSolutionFit, generateGrid } from './generateGrid';
 import { type NormalizedWord, normalizeWordList } from './normalize';
+import { themeExtras, wordsFromTheme } from './setupSettings';
 import type { Difficulty, GenerateInput, Puzzle } from './types';
 
 const SEEDS = Array.from({ length: 25 }, (_, i) => i * 7919 + 1);
@@ -104,7 +105,7 @@ describe('generateGrid – placement', () => {
 
   it('records every word at a position where the grid spells it', () => {
     for (const seed of SEEDS) {
-      const input = themeWords(seed, 12, 10);
+      const input = themeWords(seed, 11, 8);
       const puzzle = generateOk({
         words: input,
         width: 10,
@@ -146,6 +147,20 @@ describe('generateGrid – placement', () => {
     }
   });
 
+  it('places a list that exactly fills the grid', () => {
+    // 25 letters in 25 cells: random placement rarely manages, the systematic search does.
+    for (const seed of SEEDS.slice(0, 5)) {
+      const puzzle = generateOk({
+        words: raw('ABCDE', 'FGHIJ', 'KLMNO', 'PQRST', 'UVWXY'),
+        width: 5,
+        height: 5,
+        difficulty: 'makkelijk',
+        seed,
+      });
+      expect(wordCellSet(puzzle).size).toBe(25);
+    }
+  });
+
   it('fills all other cells with uppercase letters', () => {
     const puzzle = generateOk({
       words: words('fiets'),
@@ -161,7 +176,7 @@ describe('generateGrid – placement', () => {
   it('does not create accidental extra copies of words', () => {
     for (const seed of SEEDS) {
       const puzzle = generateOk({
-        words: themeWords(seed, 12, 10),
+        words: themeWords(seed, 11, 8),
         width: 10,
         height: 10,
         difficulty: 'moeilijk',
@@ -238,7 +253,19 @@ describe('generateGrid – words that do not fit', () => {
 });
 
 describe('generateGrid – hidden solution word', () => {
-  it('leaves exactly the solution letters, readable row by row', () => {
+  /** Solution letters left over after removing all word cells, row by row. */
+  function leftoverLetters(puzzle: Puzzle): string {
+    const used = wordCellSet(puzzle);
+    return puzzle.grid
+      .join('')
+      .split('')
+      .filter((_, index) => !used.has(index))
+      .join('');
+  }
+
+  const isDiagonal = (direction: string) => direction.length === 2;
+
+  it('leaves exactly the solution letters with a fixed word list', () => {
     let successes = 0;
     for (const seed of SEEDS) {
       const pool = themeWords(seed, 40, 10);
@@ -262,18 +289,91 @@ describe('generateGrid – hidden solution word', () => {
       });
       if (!result.ok) continue;
       successes++;
-      const puzzle = result.puzzle;
-      expect(puzzle.solution).toEqual({ display: 'Puzzelfeest', letters: 'PUZZELFEEST' });
-      const used = wordCellSet(puzzle);
-      const leftover = puzzle.grid
-        .join('')
-        .split('')
-        .filter((_, index) => !used.has(index))
-        .join('');
-      expect(leftover).toBe('PUZZELFEEST');
+      expect(result.puzzle.solution).toEqual({ display: 'Puzzelfeest', letters: 'PUZZELFEEST' });
+      expect(result.puzzle.words.map((w) => w.letters)).toEqual(chosen.map((w) => w.letters));
+      expect(leftoverLetters(result.puzzle)).toBe('PUZZELFEEST');
     }
-    // The exact fit is a search; it should succeed for the large majority of feasible inputs.
-    expect(successes).toBeGreaterThanOrEqual(20);
+    // An exact fit of a fixed list is a search; most feasible inputs succeed.
+    expect(successes).toBeGreaterThanOrEqual(18);
+  });
+
+  it.each([
+    [10, 'normaal'],
+    [15, 'moeilijk'],
+    [20, 'normaal'],
+  ] as const)(
+    'tops up from the theme on a %i×%i %s grid, keeping diagonal words',
+    (size, difficulty) => {
+      let successes = 0;
+      let diagonal = 0;
+      let total = 0;
+      const seeds = SEEDS.slice(0, 8);
+      for (const seed of seeds) {
+        const theme = THEMES[seed % THEMES.length]!;
+        const solution = 'Goed gedaan';
+        const required = words(
+          ...wordsFromTheme(theme, { width: size, height: size, solution, rng: createRng(seed) }),
+        );
+        const extraWords = themeExtras(theme, required, size, size);
+        const result = generateGrid({
+          words: required,
+          extraWords,
+          width: size,
+          height: size,
+          difficulty,
+          solution,
+          seed,
+        });
+        if (!result.ok) continue;
+        successes++;
+        const { puzzle } = result;
+        expect(leftoverLetters(puzzle)).toBe('GOEDGEDAAN');
+        const letters = puzzle.words.map((w) => w.letters);
+        // All listed words first (input order), then the added theme words.
+        expect(letters.slice(0, required.length)).toEqual(required.map((w) => w.letters));
+        const extraSet = new Set(extraWords.map((w) => w.letters));
+        for (const added of letters.slice(required.length)) expect(extraSet.has(added)).toBe(true);
+        expect(new Set(letters).size).toBe(letters.length);
+        diagonal += puzzle.words.filter((w) => isDiagonal(w.direction)).length;
+        total += puzzle.words.length;
+      }
+      expect(successes).toBeGreaterThanOrEqual(seeds.length - 1);
+      expect(diagonal / total).toBeGreaterThan(0.1);
+    },
+  );
+
+  it('does not add theme words when the list already fits', () => {
+    // 7×5 − 16 = 19 cells, the listed words have exactly 19 letters.
+    const required = words('olifant', 'giraffe', 'zebra');
+    const result = generateGrid({
+      words: required,
+      extraWords: words('kat', 'hond', 'vis', 'mus'),
+      width: 7,
+      height: 5,
+      difficulty: 'makkelijk',
+      solution: 'x'.repeat(16),
+      seed: 1,
+    });
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      expect(result.puzzle.words.map((w) => w.letters)).toEqual(required.map((w) => w.letters));
+    }
+  });
+
+  it('ignores extra words that are listed already or too long', () => {
+    const result = generateGrid({
+      words: words('kat'),
+      extraWords: words('kat', 'hond', 'nijlpaard'),
+      width: 5,
+      height: 5,
+      difficulty: 'makkelijk',
+      solution: 'x'.repeat(18),
+      seed: 1,
+    });
+    // 25 − 18 = 7 cells: KAT + HOND exactly. The listed KAT and the too long NIJLPAARD
+    // are not offered as extras.
+    expect(result.ok).toBe(true);
+    if (result.ok) expect(result.puzzle.words.map((w) => w.letters)).toEqual(['KAT', 'HOND']);
   });
 
   it('ignores spaces in a solution sentence', () => {

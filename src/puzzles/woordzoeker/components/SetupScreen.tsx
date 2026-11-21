@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 
 import { NumberStepper } from '@/shared/NumberStepper';
 import { createRng, randomSeed } from '@/shared/random';
@@ -6,7 +6,7 @@ import { createRng, randomSeed } from '@/shared/random';
 import { getTheme } from '../data/themes';
 import { generateGrid, MAX_SIZE, MIN_SIZE } from '../logic/generateGrid';
 import { normalizeWordList } from '../logic/normalize';
-import { solutionStatus, wordsFromTheme } from '../logic/setupSettings';
+import { solutionStatus, themeExtras, wordsFromTheme } from '../logic/setupSettings';
 import type { Puzzle, UnplacedWord } from '../logic/types';
 import { DifficultyPicker } from './DifficultyPicker';
 import styles from './SetupScreen.module.css';
@@ -22,6 +22,9 @@ interface SetupScreenProps {
   /** Message shown at the top, e.g. for an invalid share link. */
   notice?: string | null;
 }
+
+/** Delay before generating, so the browser can show the busy button first. */
+const BUSY_PAINT_MS = 30;
 
 interface Failure {
   reason: string;
@@ -40,14 +43,37 @@ export function SetupScreen({
   const { width, height, difficulty, solution, themeId, words } = settings;
 
   const normalized = useMemo(() => normalizeWordList(words).words, [words]);
-  const status = solutionStatus(normalized, width, height, solution);
+  // With a solution word the generator may top up the list with the rest of the theme.
+  const theme = themeId === null ? undefined : getTheme(themeId);
+  const hasSolution = solution.trim() !== '';
+  const extras = useMemo(
+    () => (theme && hasSolution ? themeExtras(theme, normalized, width, height) : []),
+    [theme, hasSolution, normalized, width, height],
+  );
+  const status = solutionStatus(normalized, width, height, solution, extras);
 
-  const fillFromTheme = (id: string) => {
-    const theme = getTheme(id);
-    if (!theme) return;
-    const picked = wordsFromTheme(theme, { width, height, solution, rng: createRng(randomSeed()) });
-    update({ themeId: id, words: picked });
+  // The list as last filled from the theme; while untouched it may be refilled automatically.
+  const themeFill = useRef<string[] | null>(null);
+
+  const fillFromTheme = (id: string, forSolution = solution) => {
+    const picked = getTheme(id);
+    if (!picked) return;
+    const next = wordsFromTheme(picked, {
+      width,
+      height,
+      solution: forSolution,
+      rng: createRng(randomSeed()),
+    });
+    themeFill.current = next;
+    update({ themeId: id, words: next, solution: forSolution });
     setFailure(null);
+  };
+
+  const changeSolution = (next: string) => {
+    // Adding or removing a solution word changes how many theme words suit the list.
+    const toggled = (solution.trim() === '') !== (next.trim() === '');
+    if (toggled && themeId !== null && words === themeFill.current) fillFromTheme(themeId, next);
+    else update({ solution: next });
   };
 
   const selectTheme = (id: string | null) => {
@@ -55,8 +81,10 @@ export function SetupScreen({
     else fillFromTheme(id);
   };
 
+  const [busy, setBusy] = useState(false);
+
   const generate = () => {
-    const result = generateGrid({
+    const input = {
       words: normalized,
       width,
       height,
@@ -64,13 +92,20 @@ export function SetupScreen({
       solution,
       seed: randomSeed(),
       themeId: themeId ?? undefined,
-    });
-    if (result.ok) {
-      setFailure(null);
-      onGenerated(result.puzzle);
-    } else {
-      setFailure({ reason: result.reason, unplaced: result.unplaced, partial: result.partial });
-    }
+      extraWords: extras,
+    };
+    setBusy(true);
+    // Let the busy state paint first: an exact solution fit can take a moment.
+    window.setTimeout(() => {
+      const result = generateGrid(input);
+      setBusy(false);
+      if (result.ok) {
+        setFailure(null);
+        onGenerated(result.puzzle);
+      } else {
+        setFailure({ reason: result.reason, unplaced: result.unplaced, partial: result.partial });
+      }
+    }, BUSY_PAINT_MS);
   };
 
   return (
@@ -156,7 +191,7 @@ export function SetupScreen({
           id="ws-oplossing-input"
           className="text-input"
           value={solution}
-          onChange={(e) => update({ solution: e.target.value })}
+          onChange={(e) => changeSolution(e.target.value)}
           placeholder="Bijv. GOED GEDAAN"
           autoComplete="off"
         />
@@ -196,9 +231,10 @@ export function SetupScreen({
           type="button"
           className="btn btn-primary"
           onClick={generate}
-          disabled={normalized.length === 0}
+          disabled={normalized.length === 0 || busy}
+          aria-busy={busy}
         >
-          Genereer
+          {busy ? 'Puzzel maken…' : 'Genereer'}
         </button>
       </div>
     </div>

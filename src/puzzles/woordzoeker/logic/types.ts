@@ -46,6 +46,8 @@ export interface GenerateInput {
   solution?: string;
   seed: number;
   themeId?: string;
+  /** Solution mode: words the generator may add to fill the grid exactly. */
+  extraWords?: readonly NormalizedWord[];
 }
 
 export type UnplacedCode = 'too-long' | 'no-room';

@@ -2,7 +2,7 @@ import { type Rng, shuffle } from '@/shared/random';
 
 import type { Theme } from '../data/themes';
 import { checkSolutionFit, MAX_SIZE, MIN_SIZE } from './generateGrid';
-import { type NormalizedWord, toGridLetters } from './normalize';
+import { type NormalizedWord, normalizeWordList, toGridLetters } from './normalize';
 import type { Difficulty } from './types';
 
 export interface SetupSettings {
@@ -59,12 +59,24 @@ export function suggestWordCount(width: number, height: number): number {
 export interface ThemeFillOptions {
   width: number;
   height: number;
-  /** When set, pick words whose letters just fill the grid minus the solution. */
+  /** Hidden solution word; empty string = none. */
   solution: string;
   rng: Rng;
 }
 
-/** Picks words from a theme suited to the grid size (and solution word, if any). */
+/**
+ * Share of the cells to cover that the listed words fill when there is a solution word;
+ * the generator tops up the rest from the theme. More required words make an exact fit
+ * much harder to find (measured: ~50% succeeds nearly always, ~75% only half the time).
+ */
+export const SOLUTION_LIST_SHARE = 0.5;
+/** Without a solution word the listed words fill at most this share of the grid. */
+export const PLAIN_MAX_FILL = 0.7;
+
+/**
+ * Picks theme words that fit the grid: the suggested number, or with a solution word
+ * enough to fill about half the grid (the generator adds the rest from the theme).
+ */
 export function wordsFromTheme(
   theme: Theme,
   { width, height, solution, rng }: ThemeFillOptions,
@@ -74,36 +86,48 @@ export function wordsFromTheme(
     theme.woorden.filter((w) => toGridLetters(w).length <= maxLength),
     rng,
   );
+  const cells = width * height;
   const solutionLength = toGridLetters(solution).length;
-
-  if (solutionLength === 0 || solutionLength >= width * height) {
-    return pool.slice(0, suggestWordCount(width, height));
-  }
-
-  // Fill up to exactly the cells to cover where possible: overlaps are hard to force.
-  const target = width * height - solutionLength;
-  const chosen: string[] = [];
-  const rest: string[] = [];
-  let sum = 0;
-  for (const word of pool) {
-    const length = toGridLetters(word).length;
-    if (sum + length <= target) {
+  if (solutionLength === 0 || solutionLength >= cells) {
+    // Skip words that would make the grid too full (some themes have many long words).
+    const count = suggestWordCount(width, height);
+    const chosen: string[] = [];
+    let letters = 0;
+    for (const word of pool) {
+      if (chosen.length >= count) break;
+      const length = toGridLetters(word).length;
+      if (letters + length > cells * PLAIN_MAX_FILL) continue;
       chosen.push(word);
-      sum += length;
-    } else {
-      rest.push(word);
+      letters += length;
     }
+    return chosen;
   }
-  if (sum < target && rest.length > 0) {
-    // Add the word that overshoots the least.
-    const missing = target - sum;
-    const best = rest
-      .map((word) => ({ word, length: toGridLetters(word).length }))
-      .sort((a, b) => a.length - b.length)
-      .find((w) => w.length >= missing);
-    if (best) chosen.push(best.word);
+  const target = (cells - solutionLength) * SOLUTION_LIST_SHARE;
+  const chosen: string[] = [];
+  let letters = 0;
+  for (const word of pool) {
+    if (letters >= target) break;
+    chosen.push(word);
+    letters += toGridLetters(word).length;
   }
   return chosen;
+}
+
+/**
+ * The theme words that are not in the list (and fit the grid): with a solution word the
+ * generator may add these to fill the grid exactly.
+ */
+export function themeExtras(
+  theme: Theme,
+  words: readonly NormalizedWord[],
+  width: number,
+  height: number,
+): NormalizedWord[] {
+  const maxLength = Math.max(width, height);
+  const taken = new Set(words.map((w) => w.letters));
+  return normalizeWordList(theme.woorden).words.filter(
+    (w) => w.letters.length <= maxLength && !taken.has(w.letters),
+  );
 }
 
 export type SolutionStatus =
@@ -115,9 +139,27 @@ export function solutionStatus(
   width: number,
   height: number,
   solution: string,
+  /** Theme words the generator may add (see `themeExtras`). */
+  extras: readonly NormalizedWord[] = [],
 ): SolutionStatus {
   if (solution.trim() === '') return { kind: 'none' };
   const fit = checkSolutionFit(words, width, height, solution);
+  if (!fit.ok && fit.code === 'too-few-letters' && extras.length > 0) {
+    if (checkSolutionFit([...words, ...extras], width, height, solution).ok) {
+      return {
+        kind: 'ok',
+        message:
+          '✓ Past: de puzzel wordt aangevuld met woorden uit het thema; de overgebleven ' +
+          'letters vormen je oplossing.',
+      };
+    }
+    return {
+      kind: 'error',
+      message:
+        'Dit thema heeft niet genoeg woorden voor dit formaat: voeg eigen woorden toe of ' +
+        'kies een kleiner raster.',
+    };
+  }
   if (!fit.ok) {
     if (fit.code === 'too-few-letters') {
       const letters = toGridLetters(solution).length;
