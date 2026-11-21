@@ -1,0 +1,121 @@
+.sheet {
+  display: none;
+}
+
+@media print {
+  .sheet {
+    display: block;
+    color: #000;
+    background: #fff;
+    font-family: var(--font);
+  }
+
+  .page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .answers {
+    break-before: page;
+  }
+}
+
+.title {
+  margin: 0;
+  font-size: 22pt;
+}
+
+.subtitle {
+  margin: 2mm 0 6mm;
+  font-size: 11pt;
+  color: #444;
+}
+
+.grid {
+  position: relative;
+  display: grid;
+  border: 0.6mm solid #000;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+.cell,
+.solutionCell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 0.15mm solid #999;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.solutionCell {
+  background: #ddd;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.heading {
+  align-self: flex-start;
+  margin: 7mm 0 3mm;
+  font-size: 13pt;
+}
+
+.words {
+  align-self: stretch;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  columns: 4;
+  column-gap: 6mm;
+  font-size: 11pt;
+}
+
+.words li {
+  display: flex;
+  align-items: center;
+  gap: 2mm;
+  padding: 1mm 0;
+  break-inside: avoid;
+}
+
+.checkbox {
+  width: 3.5mm;
+  height: 3.5mm;
+  border: 0.3mm solid #000;
+  flex-shrink: 0;
+}
+
+.solution {
+  align-self: flex-start;
+  display: flex;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 3mm;
+  margin-top: 7mm;
+  font-size: 12pt;
+  font-weight: 600;
+}
+
+.blanks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5mm;
+}
+
+.blank {
+  width: 6mm;
+  height: 7mm;
+  border-bottom: 0.4mm solid #000;
+}
+
+.answerSolution {
+  margin-top: 6mm;
+  font-size: 13pt;
+}

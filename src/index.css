@@ -128,3 +128,18 @@ a {
   clip: rect(0 0 0 0);
   white-space: nowrap;
 }
+
+@page {
+  size: A4 portrait;
+  margin: 15mm;
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  body {
+    background: #fff;
+  }
+}

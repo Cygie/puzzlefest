@@ -17,10 +17,13 @@ workspace:
     - choice: batch
       items_count: 4
       timestamp: 2026-11-21T19:00:00Z
+    - choice: batch
+      items_count: 1
+      timestamp: 2026-11-21T20:15:00Z
 intents:
   - id: woordzoeker
     title: Woordzoeker
-    status: in_progress
+    status: completed
     work_items:
       - id: project-scaffold
         title: Project scaffold (Vite + React + TS PWA)
@@ -78,11 +81,13 @@ intents:
         completed_at: 2026-11-21T19:25:41.924Z
       - id: print-view
         title: Print view (A4)
-        status: pending
+        status: completed
         complexity: low
         mode: autopilot
         depends_on:
           - play-ui
+        run_id: run-puzzlefest-004
+        completed_at: 2026-11-21T19:29:00.263Z
       - id: save-puzzles
         title: Save puzzles on device
         status: completed
@@ -144,3 +149,11 @@ runs:
           mode: confirm
       started: 2026-11-21T18:48:14.502Z
       completed: 2026-11-21T19:25:41.924Z
+    - id: run-puzzlefest-004
+      scope: single
+      work_items:
+        - id: print-view
+          intent: woordzoeker
+          mode: autopilot
+      started: 2026-11-21T19:27:00.153Z
+      completed: 2026-11-21T19:29:00.263Z

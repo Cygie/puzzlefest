@@ -8,6 +8,7 @@ import { leftoverCells, type Line, matchWord } from '../logic/selection';
 import type { FoundWord, PlayProgress, Puzzle } from '../logic/types';
 import { HIGHLIGHT_COLORS, PlayGrid } from './PlayGrid';
 import styles from './PlayScreen.module.css';
+import { PrintSheet } from './PrintSheet';
 import { useTimer } from './useTimer';
 
 export interface CompletionResult {
@@ -49,6 +50,7 @@ export function PlayScreen({
   const [saveError, setSaveError] = useState<string | null>(null);
   const [completion, setCompletion] = useState<CompletionResult | null>(null);
   const [shareOutcome, setShareOutcome] = useState<ShareOutcome | null>(null);
+  const [printAnswers, setPrintAnswers] = useState(false);
   const wasComplete = useRef(complete);
 
   const foundSet = useMemo(() => new Set(found.map((f) => f.letters)), [found]);
@@ -125,115 +127,131 @@ export function PlayScreen({
   const sortedWords = [...puzzle.words].sort((a, b) => a.display.localeCompare(b.display, 'nl'));
 
   return (
-    <div className={styles.screen}>
-      <div className={styles.statusBar}>
-        <span aria-live="polite">
-          Gevonden{' '}
-          <strong>
-            {found.length} / {total}
-          </strong>
-        </span>
-        <span className={styles.timer} aria-label={`Tijd ${formatTime(elapsed)}`}>
-          ⏱ {formatTime(elapsed)}
-        </span>
-      </div>
+    <>
+      <div className={`${styles.screen} no-print`}>
+        <div className={styles.statusBar}>
+          <span aria-live="polite">
+            Gevonden{' '}
+            <strong>
+              {found.length} / {total}
+            </strong>
+          </span>
+          <span className={styles.timer} aria-label={`Tijd ${formatTime(elapsed)}`}>
+            ⏱ {formatTime(elapsed)}
+          </span>
+        </div>
 
-      <PlayGrid
-        puzzle={puzzle}
-        found={found}
-        highlightCells={solutionCells}
-        disabled={complete}
-        onFirstTouch={() => setStarted(true)}
-        onSelect={select}
-      />
+        <PlayGrid
+          puzzle={puzzle}
+          found={found}
+          highlightCells={solutionCells}
+          disabled={complete}
+          onFirstTouch={() => setStarted(true)}
+          onSelect={select}
+        />
 
-      <p className={styles.feedback} aria-live="polite">
-        {lastMiss ? 'Dat is geen woord uit de lijst. Probeer het nog eens!' : ' '}
-      </p>
+        <p className={styles.feedback} aria-live="polite">
+          {lastMiss ? 'Dat is geen woord uit de lijst. Probeer het nog eens!' : ' '}
+        </p>
 
-      {complete && (
-        <section className={styles.complete} aria-labelledby="ws-klaar">
-          <h2 id="ws-klaar">Gefeliciteerd!</h2>
-          <p>
-            Je vond alle {total} woorden in <strong>{formatTime(elapsed)}</strong>.
+        {complete && (
+          <section className={styles.complete} aria-labelledby="ws-klaar">
+            <h2 id="ws-klaar">Gefeliciteerd!</h2>
+            <p>
+              Je vond alle {total} woorden in <strong>{formatTime(elapsed)}</strong>.
+            </p>
+            {puzzle.solution && (
+              <p>
+                De oplossing is:{' '}
+                <strong className={styles.solution}>{puzzle.solution.display}</strong>
+              </p>
+            )}
+            {completion?.isRecord && saved && <p className={styles.record}>🏆 Nieuw record!</p>}
+            {bestTimeMs !== null && saved && (
+              <p>
+                Beste tijd: <strong>{formatTime(bestTimeMs)}</strong>
+              </p>
+            )}
+            {!saved && onSave && (
+              <p className={styles.hint}>Sla de puzzel op om je beste tijd te bewaren.</p>
+            )}
+            <div className={styles.buttons}>
+              {!saved && saveButton}
+              {shareButton}
+              <button type="button" className="btn btn-secondary" onClick={restart}>
+                Opnieuw
+              </button>
+              <button type="button" className="btn btn-primary" onClick={onNew}>
+                Nieuwe puzzel
+              </button>
+            </div>
+          </section>
+        )}
+
+        <ul className={styles.words} aria-label="Te zoeken woorden">
+          {sortedWords.map((word) => {
+            const isFound = foundSet.has(word.letters);
+            return (
+              <li
+                key={word.letters}
+                className={isFound ? styles.wordFound : styles.word}
+                style={isFound ? { textDecorationColor: colorOf.get(word.letters) } : undefined}
+              >
+                {word.display}
+                {isFound && <span className="visually-hidden"> (gevonden)</span>}
+              </li>
+            );
+          })}
+        </ul>
+
+        {shareOutcome === 'copied' && (
+          <p className={styles.notice} role="status">
+            Link gekopieerd! Plak hem in een bericht.
           </p>
-          {puzzle.solution && (
-            <p>
-              De oplossing is:{' '}
-              <strong className={styles.solution}>{puzzle.solution.display}</strong>
-            </p>
-          )}
-          {completion?.isRecord && saved && <p className={styles.record}>🏆 Nieuw record!</p>}
-          {bestTimeMs !== null && saved && (
-            <p>
-              Beste tijd: <strong>{formatTime(bestTimeMs)}</strong>
-            </p>
-          )}
-          {!saved && onSave && (
-            <p className={styles.hint}>Sla de puzzel op om je beste tijd te bewaren.</p>
-          )}
+        )}
+        {shareOutcome === 'manual' && shareUrl && (
+          <div className={styles.manualShare}>
+            <label htmlFor="ws-share-url">Kopieer deze link:</label>
+            <input
+              id="ws-share-url"
+              className="text-input"
+              readOnly
+              value={shareUrl}
+              onFocus={(e) => e.currentTarget.select()}
+            />
+          </div>
+        )}
+
+        {saveError && (
+          <p className={styles.error} role="alert">
+            {saveError}
+          </p>
+        )}
+
+        {!complete && (
           <div className={styles.buttons}>
-            {!saved && saveButton}
+            {saveButton}
             {shareButton}
-            <button type="button" className="btn btn-secondary" onClick={restart}>
-              Opnieuw
-            </button>
-            <button type="button" className="btn btn-primary" onClick={onNew}>
+            <button type="button" className="btn btn-link" onClick={onNew}>
               Nieuwe puzzel
             </button>
           </div>
-        </section>
-      )}
-
-      <ul className={styles.words} aria-label="Te zoeken woorden">
-        {sortedWords.map((word) => {
-          const isFound = foundSet.has(word.letters);
-          return (
-            <li
-              key={word.letters}
-              className={isFound ? styles.wordFound : styles.word}
-              style={isFound ? { textDecorationColor: colorOf.get(word.letters) } : undefined}
-            >
-              {word.display}
-              {isFound && <span className="visually-hidden"> (gevonden)</span>}
-            </li>
-          );
-        })}
-      </ul>
-
-      {shareOutcome === 'copied' && (
-        <p className={styles.notice} role="status">
-          Link gekopieerd! Plak hem in een bericht.
-        </p>
-      )}
-      {shareOutcome === 'manual' && shareUrl && (
-        <div className={styles.manualShare}>
-          <label htmlFor="ws-share-url">Kopieer deze link:</label>
-          <input
-            id="ws-share-url"
-            className="text-input"
-            readOnly
-            value={shareUrl}
-            onFocus={(e) => e.currentTarget.select()}
-          />
-        </div>
-      )}
-
-      {saveError && (
-        <p className={styles.error} role="alert">
-          {saveError}
-        </p>
-      )}
-
-      {!complete && (
-        <div className={styles.buttons}>
-          {saveButton}
-          {shareButton}
-          <button type="button" className="btn btn-link" onClick={onNew}>
-            Nieuwe puzzel
+        )}
+        <div className={styles.print}>
+          <label className={styles.printOption}>
+            <input
+              type="checkbox"
+              checked={printAnswers}
+              onChange={(e) => setPrintAnswers(e.target.checked)}
+            />
+            Met antwoorden
+          </label>
+          <button type="button" className="btn btn-link" onClick={() => window.print()}>
+            🖨 Afdrukken
           </button>
         </div>
-      )}
-    </div>
+      </div>
+      <PrintSheet puzzle={puzzle} withAnswers={printAnswers} />
+    </>
   );
 }

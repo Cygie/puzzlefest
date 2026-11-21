@@ -102,3 +102,20 @@
   gap: 6px;
   font-size: 0.9rem;
 }
+
+.print {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  border-top: 1px solid var(--color-border);
+  padding-top: 8px;
+  font-size: 0.9rem;
+}
+
+.printOption {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: var(--tap-size);
+}

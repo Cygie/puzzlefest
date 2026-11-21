@@ -1,8 +1,9 @@
 ---
 id: woordzoeker
 title: Woordzoeker
-status: in_progress
+status: completed
 created: 2026-11-21T18:20:00Z
+completed_at: 2026-11-21T19:29:00.280Z
 ---
 
 # Intent: Woordzoeker
