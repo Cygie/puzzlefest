@@ -1,8 +1,9 @@
 ---
 id: hosting
 title: HTTPS hosting op GitHub Pages
-status: in_progress
+status: completed
 created: 2026-11-21T21:20:00Z
+completed_at: 2026-11-21T19:52:34.555Z
 ---
 
 # Intent: HTTPS hosting op GitHub Pages
