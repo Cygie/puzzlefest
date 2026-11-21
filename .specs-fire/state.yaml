@@ -1,0 +1,108 @@
+project:
+  name: PuzzleFest
+  description: "Dutch-language puzzle website, installable on Android as a PWA.
+    First puzzle: Woordzoeker (word search) generated from a theme or entered
+    words, with customizable width and height."
+  created: 2026-11-21T18:10:00Z
+  fire_version: 0.1.8
+workspace:
+  type: greenfield
+  structure: monolith
+  autonomy_bias: balanced
+  run_scope_preference: batch
+  run_scope_history:
+    - choice: batch
+      items_count: 3
+      timestamp: 2026-11-21T18:30:00Z
+intents:
+  - id: woordzoeker
+    title: Woordzoeker
+    status: in_progress
+    work_items:
+      - id: project-scaffold
+        title: Project scaffold (Vite + React + TS PWA)
+        status: completed
+        complexity: low
+        mode: autopilot
+        depends_on: []
+        run_id: run-puzzlefest-001
+        completed_at: 2026-11-21T18:17:48.543Z
+      - id: word-normalization
+        title: Word normalization & validation
+        status: completed
+        complexity: low
+        mode: autopilot
+        depends_on:
+          - project-scaffold
+        run_id: run-puzzlefest-001
+        completed_at: 2026-11-21T18:17:48.543Z
+      - id: theme-word-lists
+        title: Built-in Dutch theme word lists
+        status: completed
+        complexity: low
+        mode: autopilot
+        depends_on:
+          - project-scaffold
+        run_id: run-puzzlefest-001
+        completed_at: 2026-11-21T18:17:48.543Z
+      - id: grid-generator
+        title: Grid generator (placement, difficulty, solution word)
+        status: pending
+        complexity: high
+        mode: validate
+        depends_on:
+          - word-normalization
+      - id: puzzle-setup-ui
+        title: Puzzle setup screen
+        status: pending
+        complexity: medium
+        mode: confirm
+        depends_on:
+          - theme-word-lists
+          - grid-generator
+      - id: play-ui
+        title: Play screen (solve, timer, completion)
+        status: pending
+        complexity: medium
+        mode: confirm
+        depends_on:
+          - puzzle-setup-ui
+      - id: print-view
+        title: Print view (A4)
+        status: pending
+        complexity: low
+        mode: autopilot
+        depends_on:
+          - play-ui
+      - id: save-puzzles
+        title: Save puzzles on device
+        status: pending
+        complexity: medium
+        mode: confirm
+        depends_on:
+          - play-ui
+      - id: share-link
+        title: Share puzzle via link
+        status: pending
+        complexity: medium
+        mode: confirm
+        depends_on:
+          - grid-generator
+          - play-ui
+runs:
+  active: []
+  completed:
+    - id: run-puzzlefest-001
+      scope: batch
+      work_items:
+        - id: project-scaffold
+          intent: woordzoeker
+          mode: autopilot
+        - id: word-normalization
+          intent: woordzoeker
+          mode: autopilot
+        - id: theme-word-lists
+          intent: woordzoeker
+          mode: autopilot
+      started: 2026-11-21T18:11:05.928Z
+      completed: 2026-11-21T18:17:48.543Z

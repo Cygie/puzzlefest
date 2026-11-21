@@ -1,0 +1,8 @@
+dist
+dev-dist
+coverage
+node_modules
+.specsmd
+.specs-fire
+.claude
+package-lock.json
