@@ -131,6 +131,50 @@ intents:
         depends_on: []
         run_id: run-puzzlefest-006
         completed_at: 2026-11-21T19:52:34.539Z
+  - id: woordslang
+    title: Woordslang-puzzel
+    status: in_progress
+    work_items:
+      - id: shared-letter-grid
+        title: Shared letter grid with line and path selection
+        status: completed
+        complexity: medium
+        mode: confirm
+        depends_on: []
+        run_id: run-puzzlefest-007
+        completed_at: 2026-11-21T22:42:54.346Z
+      - id: woordslang-model-validator
+        title: Woordslang model and validator
+        status: completed
+        complexity: medium
+        mode: confirm
+        depends_on: []
+        run_id: run-puzzlefest-007
+        completed_at: 2026-11-21T22:42:54.346Z
+      - id: woordslang-generator
+        title: Woordslang generator (backtracking + flood fill)
+        status: pending
+        complexity: high
+        mode: validate
+        depends_on:
+          - woordslang-model-validator
+      - id: woordslang-beheer
+        title: Admin page and puzzle publishing
+        status: pending
+        complexity: medium
+        mode: confirm
+        depends_on:
+          - woordslang-generator
+          - shared-letter-grid
+      - id: woordslang-spel
+        title: Woordslang play page
+        status: pending
+        complexity: medium
+        mode: confirm
+        depends_on:
+          - shared-letter-grid
+          - woordslang-model-validator
+          - woordslang-beheer
 runs:
   active: []
   completed:
@@ -197,3 +241,14 @@ runs:
           mode: autopilot
       started: 2026-11-21T19:46:56.703Z
       completed: 2026-11-21T19:52:34.539Z
+    - id: run-puzzlefest-007
+      scope: batch
+      work_items:
+        - id: shared-letter-grid
+          intent: woordslang
+          mode: confirm
+        - id: woordslang-model-validator
+          intent: woordslang
+          mode: confirm
+      started: 2026-11-21T22:32:21.254Z
+      completed: 2026-11-21T22:42:54.346Z

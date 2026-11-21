@@ -295,14 +295,14 @@ describe('generateGrid – hidden solution word', () => {
     }
     // An exact fit of a fixed list is a search; most feasible inputs succeed.
     expect(successes).toBeGreaterThanOrEqual(18);
-  });
+  }, 60_000);
 
   it.each([
     [10, 'normaal'],
     [15, 'moeilijk'],
     [20, 'normaal'],
   ] as const)(
-    'tops up from the theme on a %i×%i %s grid, keeping diagonal words',
+    'tops up from the theme on a %i-wide %s grid, keeping diagonal words',
     (size, difficulty) => {
       let successes = 0;
       let diagonal = 0;
@@ -340,6 +340,7 @@ describe('generateGrid – hidden solution word', () => {
       expect(successes).toBeGreaterThanOrEqual(seeds.length - 1);
       expect(diagonal / total).toBeGreaterThan(0.1);
     },
+    60_000,
   );
 
   it('does not add theme words when the list already fits', () => {

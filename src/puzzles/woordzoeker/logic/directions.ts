@@ -1,3 +1,5 @@
+import type { Cell } from '@/shared/grid/cells';
+
 import type { Difficulty, Direction } from './types';
 
 export interface Vector {
@@ -5,10 +7,7 @@ export interface Vector {
   dCol: number;
 }
 
-export interface Cell {
-  row: number;
-  col: number;
-}
+export type { Cell };
 
 export const DIRECTION_VECTORS: Readonly<Record<Direction, Vector>> = {
   E: { dRow: 0, dCol: 1 },

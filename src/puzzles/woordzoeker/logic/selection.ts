@@ -1,14 +1,9 @@
 import { type Cell, DIRECTION_VECTORS, wordCells } from './directions';
+
+export { cellFromPoint, type Rect, sameCell } from '@/shared/grid/cells';
 import type { Direction, FoundWord, PlacedWord, Puzzle } from './types';
 
 export type { FoundWord };
-
-export interface Rect {
-  left: number;
-  top: number;
-  width: number;
-  height: number;
-}
 
 /** A straight selection of cells in the grid. */
 export interface Line {
@@ -19,31 +14,6 @@ export interface Line {
 
 /** Index 0 = angle 0 (east), then clockwise in 45° steps (rows grow downwards). */
 const OCTANTS: readonly Direction[] = ['E', 'SE', 'S', 'SW', 'W', 'NW', 'N', 'NE'];
-
-/**
- * Converts a screen point to a grid cell. With `clamp`, points outside the grid snap to
- * the nearest edge cell (useful while swiping); otherwise they return null.
- */
-export function cellFromPoint(
-  x: number,
-  y: number,
-  rect: Rect,
-  width: number,
-  height: number,
-  clamp = false,
-): Cell | null {
-  if (rect.width <= 0 || rect.height <= 0) return null;
-  const col = Math.floor(((x - rect.left) / rect.width) * width);
-  const row = Math.floor(((y - rect.top) / rect.height) * height);
-  if (clamp) {
-    return {
-      row: Math.min(height - 1, Math.max(0, row)),
-      col: Math.min(width - 1, Math.max(0, col)),
-    };
-  }
-  if (row < 0 || col < 0 || row >= height || col >= width) return null;
-  return { row, col };
-}
 
 /**
  * Snaps a selection from `start` towards `end` to the nearest of the 8 directions and
@@ -105,8 +75,4 @@ export function leftoverCells(puzzle: Puzzle): Cell[] {
     }
   }
   return leftover;
-}
-
-export function sameCell(a: Cell | null | undefined, b: Cell | null | undefined): boolean {
-  return !!a && !!b && a.row === b.row && a.col === b.col;
 }
