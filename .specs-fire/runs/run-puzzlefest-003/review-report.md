@@ -76,3 +76,23 @@
 - `isPuzzle` checks that the grid actually spells each word at its recorded position, so tampered data (or share links later) cannot produce an unsolvable puzzle.
 - `PlayProgress` / `FoundWord` moved to `types.ts` (shared by play, save and share).
 - `logic/testPuzzle.ts` is a test fixture; it is not imported by app code and is tree-shaken from the build.
+
+---
+
+## Work Item: share-link
+
+**Files Reviewed**: 12 — Auto-fixed: 1 (Prettier), Applied: 1, Skipped: 1. Tests passing. Lint clean.
+
+### Applied
+
+1. [Security] `shareCode.ts` — a crafted link with width `0` would make the grid-splitting loop run forever (page hang). Width is now validated as a positive integer before slicing; covered by a test.
+
+### Skipped
+
+1. [Architecture] Share code is base64url JSON without compression. Max measured 1235 chars (20×20, 25 words) is well under the 2000 target; `CompressionStream` would be async and add complexity for no current benefit.
+
+### Notes
+
+- Decoded links pass the same `isPuzzle()` validation as saved puzzles (grid must spell every word), so a tampered link can never produce an unsolvable puzzle.
+- Display text from links is rendered as React text (escaped) — no HTML injection path.
+- The address is reset to `#/woordzoeker` after opening, so a reload does not re-open the link over a saved game.

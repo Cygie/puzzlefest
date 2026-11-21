@@ -115,3 +115,28 @@ Completion panel: "Gefeliciteerd!", time, the solution (leftover cells highlight
 | `components/PlayScreen.tsx` | Opslaan button, best time / record on completion |
 | `components/SetupScreen.tsx` | "Mijn puzzels (n)" link |
 | `WoordzoekerPage.tsx` | View state setup / saved / play |
+
+---
+
+## Work Item: share-link
+
+### Approach
+
+Encode the full puzzle (not the seed — robust against future generator changes) as a compact JSON array `[1, w, h, difficulty, grid, words[[display,row,col,dir]], solution, themeId, seed]` in base64url (UTF-8 safe). Letters/length are recomputed from the display form on decode, then the result must pass `isPuzzle()`. Link: `#/woordzoeker?p=<code>`. Sharing: Web Share API → clipboard → manual copy field. The page opens a valid link straight into the play screen (unsaved) and resets the address; invalid links show a Dutch error on the setup screen.
+
+### Files to Create
+
+| File | Purpose |
+|------|---------|
+| `src/shared/base64url.ts` (+test) | UTF-8 safe base64url |
+| `src/shared/share.ts` (+test) | `shareLink()` with fallbacks |
+| `src/puzzles/woordzoeker/logic/shareCode.ts` (+test) | `encodePuzzle` / `decodePuzzle` |
+
+### Files to Modify
+
+| File | Changes |
+|------|---------|
+| `src/app/useHashRoute.ts` | `getHashParam`, `absoluteHref` |
+| `components/PlayScreen.tsx` | Delen button + outcome messages |
+| `components/SetupScreen.tsx` | Optional notice (invalid link) |
+| `WoordzoekerPage.tsx` | Open puzzle from `?p=`, listen to hashchange |

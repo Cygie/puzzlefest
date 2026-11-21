@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { formatTime } from '@/shared/formatTime';
+import { shareLink, type ShareOutcome } from '@/shared/share';
 
 import type { SaveResult } from '../logic/savedPuzzles';
 import { leftoverCells, type Line, matchWord } from '../logic/selection';
@@ -24,6 +25,8 @@ interface PlayScreenProps {
   onSave?: (progress: PlayProgress) => SaveResult;
   /** Called once when all words are found (not when reopening a finished puzzle). */
   onComplete?: (timeMs: number) => CompletionResult | null;
+  /** Link that reproduces this puzzle; when set a Delen button is shown. */
+  shareUrl?: string;
   onNew: () => void;
 }
 
@@ -34,6 +37,7 @@ export function PlayScreen({
   onProgress,
   onSave,
   onComplete,
+  shareUrl,
   onNew,
 }: PlayScreenProps) {
   const [found, setFound] = useState<FoundWord[]>(initialProgress?.found ?? []);
@@ -44,6 +48,7 @@ export function PlayScreen({
   const [lastMiss, setLastMiss] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
   const [completion, setCompletion] = useState<CompletionResult | null>(null);
+  const [shareOutcome, setShareOutcome] = useState<ShareOutcome | null>(null);
   const wasComplete = useRef(complete);
 
   const foundSet = useMemo(() => new Set(found.map((f) => f.letters)), [found]);
@@ -74,6 +79,20 @@ export function PlayScreen({
   };
 
   const bestTimeMs = completion?.bestTimeMs ?? saved?.bestTimeMs ?? null;
+
+  const share = async () => {
+    if (!shareUrl) return;
+    const text = complete
+      ? `Ik vond alle woorden in ${formatTime(elapsed)}. Kun jij het sneller?`
+      : 'Kun jij alle woorden vinden?';
+    setShareOutcome(await shareLink({ title: 'Woordzoeker – PuzzleFest', text, url: shareUrl }));
+  };
+
+  const shareButton = shareUrl && (
+    <button type="button" className="btn btn-secondary" onClick={share}>
+      Delen
+    </button>
+  );
 
   const select = (line: Line) => {
     const word = matchWord(puzzle, line, foundSet);
@@ -155,6 +174,7 @@ export function PlayScreen({
           )}
           <div className={styles.buttons}>
             {!saved && saveButton}
+            {shareButton}
             <button type="button" className="btn btn-secondary" onClick={restart}>
               Opnieuw
             </button>
@@ -181,6 +201,24 @@ export function PlayScreen({
         })}
       </ul>
 
+      {shareOutcome === 'copied' && (
+        <p className={styles.notice} role="status">
+          Link gekopieerd! Plak hem in een bericht.
+        </p>
+      )}
+      {shareOutcome === 'manual' && shareUrl && (
+        <div className={styles.manualShare}>
+          <label htmlFor="ws-share-url">Kopieer deze link:</label>
+          <input
+            id="ws-share-url"
+            className="text-input"
+            readOnly
+            value={shareUrl}
+            onFocus={(e) => e.currentTarget.select()}
+          />
+        </div>
+      )}
+
       {saveError && (
         <p className={styles.error} role="alert">
           {saveError}
@@ -190,6 +228,7 @@ export function PlayScreen({
       {!complete && (
         <div className={styles.buttons}>
           {saveButton}
+          {shareButton}
           <button type="button" className="btn btn-link" onClick={onNew}>
             Nieuwe puzzel
           </button>

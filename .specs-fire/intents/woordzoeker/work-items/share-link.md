@@ -4,11 +4,13 @@ title: Share puzzle via link
 intent: woordzoeker
 complexity: medium
 mode: confirm
-status: in_progress
+status: completed
 depends_on:
   - grid-generator
   - play-ui
 created: 2026-11-21T18:25:00Z
+run_id: run-puzzlefest-003
+completed_at: 2026-11-21T19:25:41.924Z
 ---
 
 # Work Item: Share puzzle via link

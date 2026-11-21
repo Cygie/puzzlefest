@@ -19,6 +19,8 @@ interface SetupScreenProps {
   /** Number of saved puzzles; the "Mijn puzzels" link is shown when `onShowSaved` is set. */
   savedCount?: number;
   onShowSaved?: () => void;
+  /** Message shown at the top, e.g. for an invalid share link. */
+  notice?: string | null;
 }
 
 interface Failure {
@@ -27,7 +29,12 @@ interface Failure {
   partial?: Puzzle;
 }
 
-export function SetupScreen({ onGenerated, savedCount = 0, onShowSaved }: SetupScreenProps) {
+export function SetupScreen({
+  onGenerated,
+  savedCount = 0,
+  onShowSaved,
+  notice = null,
+}: SetupScreenProps) {
   const [settings, update] = useSetupSettings();
   const [failure, setFailure] = useState<Failure | null>(null);
   const { width, height, difficulty, solution, themeId, words } = settings;
@@ -76,6 +83,12 @@ export function SetupScreen({ onGenerated, savedCount = 0, onShowSaved }: SetupS
           </button>
         )}
       </div>
+
+      {notice && (
+        <p className={styles.error} role="alert">
+          {notice}
+        </p>
+      )}
 
       <section className={styles.section} aria-labelledby="ws-thema">
         <h2 id="ws-thema" className={styles.heading}>

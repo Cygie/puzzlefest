@@ -89,3 +89,30 @@ status: passed
 - `src/puzzles/woordzoeker/logic/savedPuzzles.test.ts`
 - `src/puzzles/woordzoeker/components/SavedPuzzlesScreen.test.tsx`
 - `src/puzzles/woordzoeker/WoordzoekerPage.test.tsx`
+
+---
+
+## Work Item: share-link
+
+### Test Results
+- Passed: 20 new (shareCode 9, base64url 2, share 4, PlayScreen 2, page link flows 3); full suite 163
+- Failed: 0
+
+### Acceptance Criteria Validation
+- ✅ 'Delen' creates a link containing the puzzle — full grid encoded (not seed), versioned format
+- ✅ Web Share API when available, otherwise clipboard with Dutch confirmation — plus manual-copy field as last resort
+- ✅ Opening the link loads the identical puzzle straight into the play screen — round-trip test via the real UI
+- ✅ Invalid/corrupted links show a friendly Dutch error — garbage, non-JSON, wrong version, tampered grid, zero width
+- ✅ Link < 2000 chars for 20×20 — measured max 1235 chars (25 words); 15×15/20 words 843; 10×10 434
+- ✅ Round-trip tests: encode → decode → identical puzzle
+
+### Tests Written
+- `src/puzzles/woordzoeker/logic/shareCode.test.ts`
+- `src/shared/base64url.test.ts`, `src/shared/share.test.ts`
+- additions in `PlayScreen.test.tsx`, `WoordzoekerPage.test.tsx`
+
+---
+
+## Run Totals (run-puzzlefest-003)
+
+- 4 work items, **163 tests passing**, overall coverage ≈ 96% statements

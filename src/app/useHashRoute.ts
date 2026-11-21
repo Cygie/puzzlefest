@@ -14,8 +14,21 @@ export function parseHash(hash: string): Route {
   return ROUTES[path] ?? 'home';
 }
 
-export function hrefFor(route: Route): string {
-  return route === 'home' ? '#/' : `#/${route}`;
+export function hrefFor(route: Route, params?: Record<string, string>): string {
+  const base = route === 'home' ? '#/' : `#/${route}`;
+  const query = params ? new URLSearchParams(params).toString() : '';
+  return query ? `${base}?${query}` : base;
+}
+
+/** Absolute URL for a route, e.g. for share links. */
+export function absoluteHref(route: Route, params?: Record<string, string>): string {
+  return new URL(hrefFor(route, params), window.location.href).toString();
+}
+
+/** Reads a query parameter from the hash, e.g. `p` from `#/woordzoeker?p=abc`. */
+export function getHashParam(name: string, hash: string = window.location.hash): string | null {
+  const query = hash.split('?')[1];
+  return query ? new URLSearchParams(query).get(name) : null;
 }
 
 /**

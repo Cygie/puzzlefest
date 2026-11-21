@@ -170,4 +170,23 @@ describe('PlayScreen', () => {
     const last = onProgress.mock.calls.at(-1)?.[0];
     expect(last.found.map((f: { letters: string }) => f.letters)).toEqual(['KAT', 'HOND']);
   });
+
+  it('shows the link for manual copying when sharing is unavailable', async () => {
+    render(
+      <PlayScreen
+        puzzle={puzzle}
+        shareUrl="https://example.test/#/woordzoeker?p=abc"
+        onNew={() => {}}
+      />,
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Delen' }));
+    expect(await screen.findByLabelText('Kopieer deze link:')).toHaveValue(
+      'https://example.test/#/woordzoeker?p=abc',
+    );
+  });
+
+  it('hides Delen without a share link', () => {
+    render(<PlayScreen puzzle={puzzle} onNew={() => {}} />);
+    expect(screen.queryByRole('button', { name: 'Delen' })).toBeNull();
+  });
 });

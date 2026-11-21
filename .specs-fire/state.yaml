@@ -59,19 +59,23 @@ intents:
         completed_at: 2026-11-21T18:43:38.481Z
       - id: puzzle-setup-ui
         title: Puzzle setup screen
-        status: pending
+        status: completed
         complexity: medium
         mode: confirm
         depends_on:
           - theme-word-lists
           - grid-generator
+        run_id: run-puzzlefest-003
+        completed_at: 2026-11-21T19:25:41.924Z
       - id: play-ui
         title: Play screen (solve, timer, completion)
-        status: pending
+        status: completed
         complexity: medium
         mode: confirm
         depends_on:
           - puzzle-setup-ui
+        run_id: run-puzzlefest-003
+        completed_at: 2026-11-21T19:25:41.924Z
       - id: print-view
         title: Print view (A4)
         status: pending
@@ -81,57 +85,25 @@ intents:
           - play-ui
       - id: save-puzzles
         title: Save puzzles on device
-        status: pending
+        status: completed
         complexity: medium
         mode: confirm
         depends_on:
           - play-ui
+        run_id: run-puzzlefest-003
+        completed_at: 2026-11-21T19:25:41.924Z
       - id: share-link
         title: Share puzzle via link
-        status: pending
+        status: completed
         complexity: medium
         mode: confirm
         depends_on:
           - grid-generator
           - play-ui
+        run_id: run-puzzlefest-003
+        completed_at: 2026-11-21T19:25:41.924Z
 runs:
-  active:
-    - id: run-puzzlefest-003
-      scope: batch
-      work_items:
-        - id: puzzle-setup-ui
-          intent: woordzoeker
-          mode: confirm
-          status: completed
-          current_phase: review
-          checkpoint_state: approved
-          current_checkpoint: plan
-          completed_at: 2026-11-21T18:58:19.740Z
-        - id: play-ui
-          intent: woordzoeker
-          mode: confirm
-          status: completed
-          current_phase: review
-          checkpoint_state: approved
-          current_checkpoint: plan
-          completed_at: 2026-11-21T19:10:05.170Z
-        - id: save-puzzles
-          intent: woordzoeker
-          mode: confirm
-          status: completed
-          current_phase: review
-          checkpoint_state: approved
-          current_checkpoint: plan
-          completed_at: 2026-11-21T19:21:07.234Z
-        - id: share-link
-          intent: woordzoeker
-          mode: confirm
-          status: in_progress
-          current_phase: plan
-          checkpoint_state: none
-          current_checkpoint: plan
-      current_item: share-link
-      started: 2026-11-21T18:48:14.502Z
+  active: []
   completed:
     - id: run-puzzlefest-001
       scope: batch
@@ -155,3 +127,20 @@ runs:
           mode: validate
       started: 2026-11-21T18:34:44.825Z
       completed: 2026-11-21T18:43:38.481Z
+    - id: run-puzzlefest-003
+      scope: batch
+      work_items:
+        - id: puzzle-setup-ui
+          intent: woordzoeker
+          mode: confirm
+        - id: play-ui
+          intent: woordzoeker
+          mode: confirm
+        - id: save-puzzles
+          intent: woordzoeker
+          mode: confirm
+        - id: share-link
+          intent: woordzoeker
+          mode: confirm
+      started: 2026-11-21T18:48:14.502Z
+      completed: 2026-11-21T19:25:41.924Z

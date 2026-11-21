@@ -79,3 +79,48 @@ describe('WoordzoekerPage – saving', () => {
     unmount();
   });
 });
+
+describe('WoordzoekerPage – share links', () => {
+  afterEach(() => {
+    window.location.hash = '';
+    Object.defineProperty(navigator, 'clipboard', { value: undefined, configurable: true });
+  });
+
+  it('opens a puzzle from a link and cleans up the address', async () => {
+    const { encodePuzzle } = await import('./logic/shareCode');
+    window.location.hash = `#/woordzoeker?p=${encodePuzzle(TEST_PUZZLE)}`;
+    render(<WoordzoekerPage />);
+    expect(screen.getByText('0 / 3')).toBeInTheDocument();
+    expect(window.location.hash).toBe('#/woordzoeker');
+    swipe([0, 0], [0, 2]);
+    expect(screen.getByText('1 / 3')).toBeInTheDocument();
+  });
+
+  it('shows a Dutch error for an invalid link', () => {
+    window.location.hash = '#/woordzoeker?p=kapot';
+    render(<WoordzoekerPage />);
+    expect(screen.getByRole('alert')).toHaveTextContent('Deze link is ongeldig of beschadigd.');
+    expect(screen.getByRole('heading', { name: 'Nieuwe woordzoeker' })).toBeInTheDocument();
+  });
+
+  it('copies a share link that reopens the same puzzle', async () => {
+    const user = userEvent.setup();
+    // After userEvent.setup(), which installs its own clipboard stub.
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    Object.defineProperty(navigator, 'clipboard', { value: { writeText }, configurable: true });
+    const { unmount } = render(<WoordzoekerPage />);
+    await user.type(screen.getByLabelText('Woord toevoegen'), 'kat, hond, vis{Enter}');
+    await user.click(screen.getByRole('button', { name: 'Genereer' }));
+    const grid = screen.getByRole('img', { name: /Woordzoeker van/ }).textContent;
+
+    await user.click(screen.getByRole('button', { name: 'Delen' }));
+    expect(await screen.findByText(/Link gekopieerd!/)).toBeInTheDocument();
+    const url = new URL(writeText.mock.calls[0]![0] as string);
+    expect(url.hash).toMatch(/^#\/woordzoeker\?p=[A-Za-z0-9_-]+$/);
+    unmount();
+
+    window.location.hash = url.hash;
+    render(<WoordzoekerPage />);
+    expect(screen.getByRole('img', { name: /Woordzoeker van/ }).textContent).toBe(grid);
+  });
+});
