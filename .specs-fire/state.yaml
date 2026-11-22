@@ -23,6 +23,9 @@ workspace:
     - choice: batch
       items_count: 2
       timestamp: 2026-11-22T11:25:00Z
+    - choice: batch
+      items_count: 2
+      timestamp: 2026-11-22T14:20:00Z
 intents:
   - id: woordzoeker
     title: Woordzoeker
@@ -207,18 +210,22 @@ intents:
         completed_at: 2026-11-22T13:48:24.496Z
       - id: getallenpad-path-generator
         title: Hamiltonian path generator (Warnsdorff + backtracking)
-        status: pending
+        status: completed
         complexity: high
         mode: validate
         depends_on:
           - getallenpad-model-validator
+        run_id: run-puzzlefest-012
+        completed_at: 2026-11-22T14:40:08.784Z
       - id: getallenpad-solver
         title: Counting solver with pruning and uniqueness check
-        status: pending
+        status: completed
         complexity: high
         mode: validate
         depends_on:
           - getallenpad-model-validator
+        run_id: run-puzzlefest-012
+        completed_at: 2026-11-22T14:40:08.784Z
       - id: getallenpad-reduction
         title: Puzzle reduction and difficulty metric
         status: pending
@@ -356,3 +363,14 @@ runs:
           mode: confirm
       started: 2026-11-22T12:27:31.153Z
       completed: 2026-11-22T13:48:24.496Z
+    - id: run-puzzlefest-012
+      scope: batch
+      work_items:
+        - id: getallenpad-path-generator
+          intent: getallenpad
+          mode: validate
+        - id: getallenpad-solver
+          intent: getallenpad
+          mode: validate
+      started: 2026-11-22T14:17:15.769Z
+      completed: 2026-11-22T14:40:08.784Z

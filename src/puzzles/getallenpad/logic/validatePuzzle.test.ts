@@ -51,14 +51,14 @@ describe('validatePuzzle', () => {
 
   it('rejects a given that differs from the solution', () => {
     const puzzle = testPuzzle();
-    puzzle.givens[1]![1] = 6;
+    puzzle.givens[1]![2] = 5;
     expect(codes(puzzle)).toEqual<ValidationCode[]>(['given-mismatch']);
   });
 
   it('requires 1 and N to be given', () => {
     const puzzle = testPuzzle();
     puzzle.givens[3]![0] = null;
-    puzzle.metric.givenRatio = 5 / 16;
+    puzzle.metric.givenRatio = 8 / 16;
     const result = validatePuzzle(puzzle);
     expect(result.ok).toBe(false);
     if (!result.ok) {
@@ -72,7 +72,7 @@ describe('validatePuzzle', () => {
     const puzzle = testPuzzle();
     puzzle.metric.givenRatio = 0.5;
     expect(codes(puzzle)).toEqual<ValidationCode[]>(['metric']);
-    puzzle.metric.givenRatio = 0.377; // within tolerance of 0.375
+    puzzle.metric.givenRatio = 0.565; // within tolerance of 0.5625
     expect(codes(puzzle)).toEqual([]);
   });
 
@@ -88,7 +88,7 @@ describe('validatePuzzle', () => {
 
   it('does not count solutions of a broken puzzle', () => {
     const puzzle = testPuzzle();
-    puzzle.givens[1]![1] = 6;
+    puzzle.givens[1]![2] = 5;
     const countSolutions = vi.fn(() => 1 as const);
     expect(codes(puzzle, { countSolutions })).toEqual<ValidationCode[]>(['given-mismatch']);
     expect(countSolutions).not.toHaveBeenCalled();

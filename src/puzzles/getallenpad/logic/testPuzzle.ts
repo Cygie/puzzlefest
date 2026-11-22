@@ -1,6 +1,6 @@
 import type { GetallenpadPuzzle } from './types';
 
-/** A valid 4×4 puzzle (snake path) for tests; uniqueness is not claimed. */
+/** A valid 4×4 puzzle (snake path) with exactly one solution, for tests. */
 export const TEST_PUZZLE: GetallenpadPuzzle = {
   version: 1,
   id: 'test-slang',
@@ -14,12 +14,12 @@ export const TEST_PUZZLE: GetallenpadPuzzle = {
     [16, 15, 14, 13],
   ],
   givens: [
-    [1, null, null, 4],
-    [null, 7, null, null],
-    [null, null, 11, null],
+    [1, 2, null, 4],
+    [null, null, 6, null],
+    [9, 10, 11, null],
     [16, null, null, 13],
   ],
-  metric: { givenRatio: 6 / 16, solverNodes: 0 },
+  metric: { givenRatio: 9 / 16, solverNodes: 0 },
 };
 
 /** A deep copy of the test puzzle, to change in a test. */

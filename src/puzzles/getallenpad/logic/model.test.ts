@@ -34,9 +34,9 @@ describe('model helpers', () => {
 
   it('lists the given cells and their share', () => {
     const givens = givenCells(TEST_PUZZLE);
-    expect(givens.map((g) => g.value)).toEqual([1, 4, 7, 11, 16, 13]);
-    expect(givens[2]!.cell).toEqual({ row: 1, col: 1 });
-    expect(givenRatio(TEST_PUZZLE)).toBe(6 / 16);
+    expect(givens.map((g) => g.value)).toEqual([1, 2, 4, 6, 9, 10, 11, 16, 13]);
+    expect(givens[3]!.cell).toEqual({ row: 1, col: 2 });
+    expect(givenRatio(TEST_PUZZLE)).toBe(9 / 16);
   });
 
   it('starts a player with nothing entered and nothing to undo', () => {
