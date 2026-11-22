@@ -133,7 +133,7 @@ intents:
         completed_at: 2026-11-21T19:52:34.539Z
   - id: woordslang
     title: Woordslang-puzzel
-    status: in_progress
+    status: completed
     work_items:
       - id: shared-letter-grid
         title: Shared letter grid with line and path selection
