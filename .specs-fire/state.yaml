@@ -26,6 +26,9 @@ workspace:
     - choice: batch
       items_count: 2
       timestamp: 2026-11-22T14:20:00Z
+    - choice: batch
+      items_count: 3
+      timestamp: 2026-11-22T16:00:00Z
 intents:
   - id: woordzoeker
     title: Woordzoeker
@@ -228,29 +231,35 @@ intents:
         completed_at: 2026-11-22T14:40:08.784Z
       - id: getallenpad-reduction
         title: Puzzle reduction and difficulty metric
-        status: pending
+        status: completed
         complexity: medium
         mode: confirm
+        run_id: run-puzzlefest-013
+        completed_at: 2026-11-22T18:08:29.866Z
         depends_on:
           - getallenpad-path-generator
           - getallenpad-solver
       - id: getallenpad-beheer
         title: Admin page and puzzle publishing
-        status: pending
+        status: completed
         complexity: medium
         mode: confirm
+        run_id: run-puzzlefest-013
+        completed_at: 2026-11-22T18:08:29.866Z
         depends_on:
           - getallenpad-reduction
           - shared-grid-generalize
       - id: getallenpad-spel
         title: Getallenpad play page
-        status: pending
+        status: completed
         complexity: medium
         mode: confirm
         depends_on:
           - shared-grid-generalize
           - getallenpad-model-validator
           - getallenpad-beheer
+        run_id: run-puzzlefest-013
+        completed_at: 2026-11-22T18:08:29.866Z
 runs:
   active: []
   completed:
@@ -374,3 +383,17 @@ runs:
           mode: validate
       started: 2026-11-22T14:17:15.769Z
       completed: 2026-11-22T14:40:08.784Z
+    - id: run-puzzlefest-013
+      scope: batch
+      work_items:
+        - id: getallenpad-reduction
+          intent: getallenpad
+          mode: confirm
+        - id: getallenpad-beheer
+          intent: getallenpad
+          mode: confirm
+        - id: getallenpad-spel
+          intent: getallenpad
+          mode: confirm
+      started: 2026-11-22T14:43:51.702Z
+      completed: 2026-11-22T18:08:29.866Z

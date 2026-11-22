@@ -24,10 +24,34 @@ describe('App shell', () => {
     );
   });
 
+  it('navigates to the Getallenpad list via the menu route', () => {
+    render(<App />);
+    act(() => {
+      window.location.hash = '#/getallenpad';
+      window.dispatchEvent(new HashChangeEvent('hashchange'));
+    });
+    expect(screen.getByRole('heading', { name: 'Getallenpad', level: 1 })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Getallenpad' })).toHaveAttribute(
+      'aria-current',
+      'page',
+    );
+    act(() => {
+      window.location.hash = '';
+      window.dispatchEvent(new HashChangeEvent('hashchange'));
+    });
+  });
+
   it('opens the woordslang admin page in dev builds', async () => {
     window.location.hash = '#/woordslang/beheer';
     render(<App />);
     expect(await screen.findByRole('heading', { name: 'Woordslang beheer' })).toBeInTheDocument();
+    window.location.hash = '';
+  });
+
+  it('opens the getallenpad admin page in dev builds', async () => {
+    window.location.hash = '#/getallenpad/beheer';
+    render(<App />);
+    expect(await screen.findByRole('heading', { name: 'Getallenpad beheer' })).toBeInTheDocument();
     window.location.hash = '';
   });
 });
@@ -37,6 +61,7 @@ describe('parseHash', () => {
     expect(parseHash('')).toBe('home');
     expect(parseHash('#/')).toBe('home');
     expect(parseHash('#/woordzoeker')).toBe('woordzoeker');
+    expect(parseHash('#/getallenpad/7x7-normaal-201')).toBe('getallenpad');
     expect(parseHash('#/woordzoeker?p=abc')).toBe('woordzoeker');
     expect(parseHash('#/bestaat-niet')).toBe('home');
     expect(parseHash('#/woordzoeker/mijn')).toBe('woordzoeker');

@@ -1,5 +1,6 @@
 import { lazy, Suspense } from 'react';
 
+import { GetallenpadPage } from '@/puzzles/getallenpad/GetallenpadPage';
 import { WoordslangPage } from '@/puzzles/woordslang/WoordslangPage';
 import { WoordzoekerPage } from '@/puzzles/woordzoeker/WoordzoekerPage';
 
@@ -8,19 +9,27 @@ import { HomePage } from './HomePage';
 import { hrefFor, useHashPath, useHashRoute } from './useHashRoute';
 
 /**
- * Woordslang admin page, only in the dev server (`npm run dev`). In a production build
- * `import.meta.env.DEV` is the constant `false`, so the import and its code are dropped.
+ * Admin pages, only in the dev server (`npm run dev`), at `#/<puzzle>/beheer`. In a production
+ * build `import.meta.env.DEV` is the constant `false`, so the imports and their code are dropped.
  */
-const BeheerPage = import.meta.env.DEV
-  ? lazy(() =>
-      import('@/puzzles/woordslang/beheer/BeheerPage').then((m) => ({ default: m.BeheerPage })),
-    )
+const BEHEER_PAGES = import.meta.env.DEV
+  ? {
+      woordslang: lazy(() =>
+        import('@/puzzles/woordslang/beheer/BeheerPage').then((m) => ({ default: m.BeheerPage })),
+      ),
+      getallenpad: lazy(() =>
+        import('@/puzzles/getallenpad/beheer/BeheerPage').then((m) => ({ default: m.BeheerPage })),
+      ),
+    }
   : null;
 
 export function App() {
   const route = useHashRoute();
   const path = useHashPath();
-  const showBeheer = BeheerPage !== null && path[0] === 'woordslang' && path[1] === 'beheer';
+  const BeheerPage =
+    path[1] === 'beheer' && BEHEER_PAGES && (path[0] === 'woordslang' || path[0] === 'getallenpad')
+      ? BEHEER_PAGES[path[0]]
+      : null;
 
   return (
     <div className={styles.shell}>
@@ -43,10 +52,17 @@ export function App() {
           >
             Woordslang
           </a>
+          <a
+            className={styles.navLink}
+            href={hrefFor('getallenpad')}
+            aria-current={route === 'getallenpad' ? 'page' : undefined}
+          >
+            Getallenpad
+          </a>
         </nav>
       </header>
       <main className={styles.main}>
-        {showBeheer ? (
+        {BeheerPage ? (
           <Suspense fallback={<p>Laden…</p>}>
             <BeheerPage />
           </Suspense>
@@ -54,6 +70,8 @@ export function App() {
           <WoordzoekerPage />
         ) : route === 'woordslang' ? (
           <WoordslangPage />
+        ) : route === 'getallenpad' ? (
+          <GetallenpadPage />
         ) : (
           <HomePage />
         )}

@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "id": "7x7-makkelijk-102",
+  "level": "makkelijk",
+  "width": 7,
+  "height": 7,
+  "solution": [
+    [28, 29, 18, 17, 16, 15, 14],
+    [30, 27, 26, 19, 20, 21, 13],
+    [31, 32, 34, 25, 24, 22, 12],
+    [48, 33, 39, 35, 23, 11, 1],
+    [47, 49, 40, 38, 36, 10, 2],
+    [46, 41, 43, 37, 9, 6, 3],
+    [45, 44, 42, 8, 7, 5, 4]
+  ],
+  "givens": [
+    [null, 29, null, 17, 16, 15, null],
+    [30, null, null, 19, null, null, 13],
+    [31, null, 34, 25, 24, 22, 12],
+    [null, 33, 39, null, null, null, 1],
+    [null, 49, 40, null, null, 10, null],
+    [null, null, 43, null, 9, null, null],
+    [null, null, 42, 8, 7, 5, null]
+  ],
+  "metric": {
+    "givenRatio": 0.5102040816326531,
+    "solverNodes": 33
+  },
+  "seed": 102
+}

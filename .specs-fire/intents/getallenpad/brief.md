@@ -1,8 +1,9 @@
 ---
 id: getallenpad
 title: Getallenpad-puzzel toevoegen aan PuzzleFest
-status: in_progress
+status: completed
 created: 2026-11-22T11:00:00Z
+completed_at: 2026-11-22T18:08:29.894Z
 ---
 
 # Intent: Getallenpad-puzzel

@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "id": "7x7-moeilijk-302",
+  "level": "moeilijk",
+  "width": 7,
+  "height": 7,
+  "solution": [
+    [24, 25, 27, 28, 29, 30, 31],
+    [23, 26, 44, 43, 41, 40, 32],
+    [22, 45, 46, 47, 42, 39, 33],
+    [21, 20, 49, 48, 38, 37, 34],
+    [2, 1, 19, 18, 36, 35, 15],
+    [3, 6, 9, 10, 17, 16, 14],
+    [4, 5, 7, 8, 11, 12, 13]
+  ],
+  "givens": [
+    [null, 25, 27, null, null, null, null],
+    [null, null, 44, null, 41, null, null],
+    [null, null, null, null, null, 39, null],
+    [null, null, 49, 48, null, 37, null],
+    [null, 1, null, null, 36, null, null],
+    [null, null, 9, 10, null, null, null],
+    [null, 5, null, null, null, null, 13]
+  ],
+  "metric": {
+    "givenRatio": 0.2857142857142857,
+    "solverNodes": 8276
+  },
+  "seed": 302
+}

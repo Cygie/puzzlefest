@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
 
-export type Route = 'home' | 'woordzoeker' | 'woordslang';
+export type Route = 'home' | 'woordzoeker' | 'woordslang' | 'getallenpad';
 
 /** Top-level routes by first path segment; sub-paths belong to the same page. */
 const ROUTES: Record<string, Route> = {
   '': 'home',
   woordzoeker: 'woordzoeker',
   woordslang: 'woordslang',
+  getallenpad: 'getallenpad',
 };
 
 /** Path segments of a hash, e.g. `#/woordzoeker/spel/abc?p=1` → `['woordzoeker','spel','abc']`. */

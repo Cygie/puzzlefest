@@ -23,6 +23,14 @@ export function HomePage() {
             </span>
           </a>
         </li>
+        <li>
+          <a className={styles.tile} href={hrefFor('getallenpad')}>
+            <span className={styles.tileTitle}>Getallenpad</span>
+            <span className={styles.tileText}>
+              Leg een pad van 1 tot het eind door alle vakjes, met getallen die elkaar raken.
+            </span>
+          </a>
+        </li>
       </ul>
     </section>
   );

@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "id": "7x7-normaal-202",
+  "level": "normaal",
+  "width": 7,
+  "height": 7,
+  "solution": [
+    [32, 33, 34, 35, 36, 37, 38],
+    [31, 45, 44, 43, 42, 41, 39],
+    [30, 46, 28, 26, 25, 22, 40],
+    [47, 29, 27, 11, 23, 24, 21],
+    [8, 48, 10, 12, 13, 14, 20],
+    [7, 9, 49, 1, 15, 19, 17],
+    [6, 5, 4, 3, 2, 16, 18]
+  ],
+  "givens": [
+    [null, null, 34, null, null, 37, null],
+    [null, null, null, 43, 42, 41, 39],
+    [null, 46, 28, 26, null, 22, 40],
+    [null, null, null, 11, 23, null, null],
+    [null, null, null, null, null, 14, 20],
+    [7, null, 49, 1, 15, null, 17],
+    [null, null, null, null, null, null, null]
+  ],
+  "metric": {
+    "givenRatio": 0.40816326530612246,
+    "solverNodes": 31
+  },
+  "seed": 202
+}

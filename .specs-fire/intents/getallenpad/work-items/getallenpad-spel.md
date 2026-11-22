@@ -4,9 +4,14 @@ title: Getallenpad play page
 intent: getallenpad
 complexity: medium
 mode: confirm
-status: pending
-depends_on: [shared-grid-generalize, getallenpad-model-validator, getallenpad-beheer]
+status: completed
+depends_on:
+  - shared-grid-generalize
+  - getallenpad-model-validator
+  - getallenpad-beheer
 created: 2026-11-22T11:15:00Z
+run_id: run-puzzlefest-013
+completed_at: 2026-11-22T18:08:29.866Z
 ---
 
 # Work Item: Getallenpad play page

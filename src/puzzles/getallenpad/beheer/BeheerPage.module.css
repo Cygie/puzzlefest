@@ -1,0 +1,121 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.title {
+  margin: 4px 0 0;
+  font-size: 1.4rem;
+}
+
+.note {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.heading {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.levels {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  margin: 0;
+  padding: 8px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+}
+
+.levels legend {
+  font-weight: 600;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-weight: 600;
+  max-width: 16rem;
+}
+
+.error {
+  margin: 0;
+  padding: 12px;
+  border-radius: var(--radius);
+  background: #fdecea;
+  color: #8a1c12;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.results {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.result {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.result[aria-pressed='true'] {
+  border-color: var(--color-primary);
+  font-weight: 600;
+}
+
+.grids {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.figure {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1 1 12rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.given {
+  font-weight: 700;
+}
+
+.json {
+  font-family: ui-monospace, monospace;
+  font-size: 0.8rem;
+  resize: vertical;
+}

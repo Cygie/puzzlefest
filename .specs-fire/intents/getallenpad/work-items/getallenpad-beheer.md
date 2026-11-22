@@ -4,9 +4,13 @@ title: Admin page and puzzle publishing
 intent: getallenpad
 complexity: medium
 mode: confirm
-status: pending
-depends_on: [getallenpad-reduction, shared-grid-generalize]
+status: completed
+depends_on:
+  - getallenpad-reduction
+  - shared-grid-generalize
 created: 2026-11-22T11:15:00Z
+run_id: run-puzzlefest-013
+completed_at: 2026-11-22T18:08:29.866Z
 ---
 
 # Work Item: Admin page and puzzle publishing

@@ -5,6 +5,13 @@ export type { Cell };
 export const LEVELS = ['makkelijk', 'normaal', 'moeilijk'] as const;
 export type Level = (typeof LEVELS)[number];
 
+/** Display names of the levels (Dutch). */
+export const LEVEL_LABELS: Record<Level, string> = {
+  makkelijk: 'Makkelijk',
+  normaal: 'Normaal',
+  moeilijk: 'Moeilijk',
+};
+
 /** How hard a puzzle is, stored with the puzzle so the levels can be compared. */
 export interface DifficultyMetric {
   /** Share of cells that are given (0..1). */
