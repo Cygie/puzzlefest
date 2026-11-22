@@ -17,9 +17,9 @@ From a full path, remove numbers in seeded order while the solver still finds ex
 
 ## Acceptance Criteria
 
-- [ ] `createPuzzle({width, height, level, seed, signal})` → `Result<Puzzle, Error>`; levels: makkelijk ~40%, normaal ~30%, moeilijk ~20% givens
+- [ ] `createPuzzle({width, height, level, seed, signal})` → `Result<Puzzle, Error>`; a few reduction passes (other order / path) within the time budget, keep the lowest = **moeilijk** (minimal); **normaal** ~40% and **makkelijk** ~50% by adding givens back (decision 2026-11-22, see brief)
 - [ ] 1 and N are never removed; result always has exactly one solution
-- [ ] Unreachable target (cannot get down to the target %) → explicit `err` or retry with a new path within the time budget
+- [ ] Solver calls use `maxNodes`; `node-limit` counts as "keep this given"; no unique puzzle within the time budget → explicit `err`
 - [ ] Stored metric: given percentage and solver visited nodes of the final uniqueness check
 - [ ] Property test: N random seeds → every produced puzzle passes the full validator
 - [ ] Performance test (can be tagged/skipped in CI): 7×7 produces a unique puzzle within 5 s in ≥ 95% of runs; report metric distribution per level to show the levels differ

@@ -39,7 +39,7 @@ PuzzleFest heeft alleen woordpuzzels. Een getallenpuzzel spreekt een ander publi
 - **Domeinmodel**, strikt getypeerd: puzzel, givens, oplossing, spelerstoestand. Spelerstoestand gescheiden van de puzzeldefinitie.
 - **Padgenerator**: willekeurig Hamiltonpad over het raster. Backtracking met Warnsdorff-heuristiek (gelijke stand: willekeurig volgens seed), deterministisch per seed, time-out + herstart, expliciete fout bij mislukken.
 - **Solver**: DFS die oplossingen telt en stopt bij 2 (0 / 1 / meerdere). Snoei: afstand tussen opeenvolgende givens (Chebyshev-afstand ≤ waardeverschil) en flood fill op lege regio's. Rapporteert het aantal bezochte knopen.
-- **Puzzelreductie**: vanaf het volledige pad getallen verwijderen in seed-volgorde zolang de solver precies 1 oplossing vindt. Doelpercentages givens: makkelijk ~40%, normaal ~30%, moeilijk ~20%.
+- **Puzzelreductie**: vanaf het volledige pad getallen verwijderen in seed-volgorde zolang de solver precies 1 oplossing vindt. Doelpercentages givens (herzien, zie beslissingen): makkelijk ~50%, normaal ~40%, moeilijk = minimaal (~30–35%).
 - **Moeilijkheidsmetriek** (beslist): per puzzel worden zowel het percentage givens als de solver-metriek (bezochte knopen bij de uniciteitscheck) opgeslagen.
 - **Validator**: unieke oplossing, givens komen overeen met de oplossing, geldig pad.
 - **Publicatie**: vooraf gegenereerde puzzels als JSON in de repo, meegeleverd met de site; nooit live genereren tijdens het spelen.
@@ -78,6 +78,7 @@ PuzzleFest heeft alleen woordpuzzels. Een getallenpuzzel spreekt een ander publi
 
 - **Foutfeedback**: direct tonen tijdens het spelen (2026-11-22).
 - **Moeilijkheid**: givens-% stuurt de reductie; givens-% én solver-knopen worden opgeslagen (2026-11-22).
+- **Moeilijkheid, herzien na meting (2026-11-22)**: met 8-richtingen eindigt gretige reductie op 7×7 bij 29–43% givens, dus ~20% is niet haalbaar. Nieuwe aanpak: binnen het tijdsbudget enkele reductierondes (andere volgorde/pad) en de laagste houden = **moeilijk** (minimaal, ~30–35%); voor **normaal** (~40%) en **makkelijk** (~50%) worden givens teruggezet. Niveaus verschillen in givens-% én solver-knopen.
 - **Opslag**: geen database. Eigen JSON-map per speltype (`src/puzzles/getallenpad/data/`), zoals bij woordslang. Spelersvoortgang in `localStorage`.
 
 ## Testen
