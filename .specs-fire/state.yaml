@@ -20,6 +20,9 @@ workspace:
     - choice: batch
       items_count: 1
       timestamp: 2026-11-21T20:15:00Z
+    - choice: batch
+      items_count: 2
+      timestamp: 2026-11-22T11:25:00Z
 intents:
   - id: woordzoeker
     title: Woordzoeker
@@ -181,6 +184,66 @@ intents:
           - woordslang-beheer
         run_id: run-puzzlefest-010
         completed_at: 2026-11-22T08:44:28.080Z
+  - id: getallenpad
+    title: Getallenpad-puzzel
+    status: in_progress
+    work_items:
+      - id: shared-grid-generalize
+        title: Generic grid cell content and shared path/region utilities
+        status: completed
+        complexity: medium
+        mode: confirm
+        depends_on: []
+        run_id: run-puzzlefest-011
+        completed_at: 2026-11-22T13:48:24.496Z
+      - id: getallenpad-model-validator
+        title: Getallenpad domain model and structural validator
+        status: completed
+        complexity: medium
+        mode: confirm
+        depends_on:
+          - shared-grid-generalize
+        run_id: run-puzzlefest-011
+        completed_at: 2026-11-22T13:48:24.496Z
+      - id: getallenpad-path-generator
+        title: Hamiltonian path generator (Warnsdorff + backtracking)
+        status: pending
+        complexity: high
+        mode: validate
+        depends_on:
+          - getallenpad-model-validator
+      - id: getallenpad-solver
+        title: Counting solver with pruning and uniqueness check
+        status: pending
+        complexity: high
+        mode: validate
+        depends_on:
+          - getallenpad-model-validator
+      - id: getallenpad-reduction
+        title: Puzzle reduction and difficulty metric
+        status: pending
+        complexity: medium
+        mode: confirm
+        depends_on:
+          - getallenpad-path-generator
+          - getallenpad-solver
+      - id: getallenpad-beheer
+        title: Admin page and puzzle publishing
+        status: pending
+        complexity: medium
+        mode: confirm
+        depends_on:
+          - getallenpad-reduction
+          - shared-grid-generalize
+      - id: getallenpad-spel
+        title: Getallenpad play page
+        status: pending
+        complexity: medium
+        mode: confirm
+        depends_on:
+          - shared-grid-generalize
+          - getallenpad-model-validator
+          - getallenpad-beheer
 runs:
   active: []
   completed:
@@ -282,3 +345,14 @@ runs:
           mode: confirm
       started: 2026-11-22T08:22:22.616Z
       completed: 2026-11-22T08:44:28.080Z
+    - id: run-puzzlefest-011
+      scope: batch
+      work_items:
+        - id: shared-grid-generalize
+          intent: getallenpad
+          mode: confirm
+        - id: getallenpad-model-validator
+          intent: getallenpad
+          mode: confirm
+      started: 2026-11-22T12:27:31.153Z
+      completed: 2026-11-22T13:48:24.496Z

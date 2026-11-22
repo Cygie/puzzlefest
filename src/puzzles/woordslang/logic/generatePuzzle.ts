@@ -1,8 +1,9 @@
 import { createRng } from '@/shared/random';
+import { EMPTY, labelRegions, neighbourTable } from '@/shared/grid/regions';
 import { err, ok, type Result } from '@/shared/result';
 
 import { normalizeWord } from '../../woordzoeker/logic/normalize';
-import { canPartition, EMPTY, labelRegions, neighbourTable } from './regions';
+import { canPartition } from './regions';
 import { MAX_GRID_SIZE, MIN_GRID_SIZE, type SlangWord, type WoordslangPuzzle } from './types';
 import { validatePuzzle } from './validatePuzzle';
 
