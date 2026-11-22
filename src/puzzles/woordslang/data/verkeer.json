@@ -1,0 +1,120 @@
+{
+  "version": 1,
+  "id": "verkeer",
+  "theme": "Verkeer",
+  "hint": "Kijk goed uit",
+  "width": 6,
+  "height": 8,
+  "grid": ["HTUTRB", "CBSWRU", "IGEAMG", "LROTUT", "PETAAE", "ONIXIT", "TEIFSO", "SDNOTR"],
+  "words": [
+    {
+      "display": "stoplicht",
+      "letters": "STOPLICHT",
+      "path": [
+        { "row": 7, "col": 0 },
+        { "row": 6, "col": 0 },
+        { "row": 5, "col": 0 },
+        { "row": 4, "col": 0 },
+        { "row": 3, "col": 0 },
+        { "row": 2, "col": 0 },
+        { "row": 1, "col": 0 },
+        { "row": 0, "col": 0 },
+        { "row": 0, "col": 1 }
+      ],
+      "key": true
+    },
+    {
+      "display": "fiets",
+      "letters": "FIETS",
+      "path": [
+        { "row": 6, "col": 3 },
+        { "row": 5, "col": 4 },
+        { "row": 4, "col": 5 },
+        { "row": 5, "col": 5 },
+        { "row": 6, "col": 4 }
+      ]
+    },
+    {
+      "display": "auto",
+      "letters": "AUTO",
+      "path": [
+        { "row": 4, "col": 3 },
+        { "row": 3, "col": 4 },
+        { "row": 3, "col": 3 },
+        { "row": 3, "col": 2 }
+      ]
+    },
+    {
+      "display": "bus",
+      "letters": "BUS",
+      "path": [
+        { "row": 1, "col": 1 },
+        { "row": 0, "col": 2 },
+        { "row": 1, "col": 2 }
+      ]
+    },
+    {
+      "display": "trein",
+      "letters": "TREIN",
+      "path": [
+        { "row": 4, "col": 2 },
+        { "row": 3, "col": 1 },
+        { "row": 4, "col": 1 },
+        { "row": 5, "col": 2 },
+        { "row": 5, "col": 1 }
+      ]
+    },
+    {
+      "display": "tram",
+      "letters": "TRAM",
+      "path": [
+        { "row": 0, "col": 3 },
+        { "row": 1, "col": 4 },
+        { "row": 2, "col": 3 },
+        { "row": 2, "col": 4 }
+      ]
+    },
+    {
+      "display": "brug",
+      "letters": "BRUG",
+      "path": [
+        { "row": 0, "col": 5 },
+        { "row": 0, "col": 4 },
+        { "row": 1, "col": 5 },
+        { "row": 2, "col": 5 }
+      ]
+    },
+    {
+      "display": "rotonde",
+      "letters": "ROTONDE",
+      "path": [
+        { "row": 7, "col": 5 },
+        { "row": 6, "col": 5 },
+        { "row": 7, "col": 4 },
+        { "row": 7, "col": 3 },
+        { "row": 7, "col": 2 },
+        { "row": 7, "col": 1 },
+        { "row": 6, "col": 1 }
+      ]
+    },
+    {
+      "display": "taxi",
+      "letters": "TAXI",
+      "path": [
+        { "row": 3, "col": 5 },
+        { "row": 4, "col": 4 },
+        { "row": 5, "col": 3 },
+        { "row": 6, "col": 2 }
+      ]
+    },
+    {
+      "display": "weg",
+      "letters": "WEG",
+      "path": [
+        { "row": 1, "col": 3 },
+        { "row": 2, "col": 2 },
+        { "row": 2, "col": 1 }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,120 @@
+{
+  "version": 1,
+  "id": "op-de-boerderij",
+  "theme": "Op de boerderij",
+  "hint": "Hier begint de dag vroeg",
+  "width": 6,
+  "height": 8,
+  "grid": ["IJDREG", "RVNEAI", "EADEAT", "DKRPKP", "RPENIE", "EAZEOK", "OHAELA", "BSCHAN"],
+  "words": [
+    {
+      "display": "boerderij",
+      "letters": "BOERDERIJ",
+      "path": [
+        { "row": 7, "col": 0 },
+        { "row": 6, "col": 0 },
+        { "row": 5, "col": 0 },
+        { "row": 4, "col": 0 },
+        { "row": 3, "col": 0 },
+        { "row": 2, "col": 0 },
+        { "row": 1, "col": 0 },
+        { "row": 0, "col": 0 },
+        { "row": 0, "col": 1 }
+      ],
+      "key": true
+    },
+    {
+      "display": "varken",
+      "letters": "VARKEN",
+      "path": [
+        { "row": 1, "col": 1 },
+        { "row": 2, "col": 1 },
+        { "row": 3, "col": 2 },
+        { "row": 3, "col": 1 },
+        { "row": 4, "col": 2 },
+        { "row": 4, "col": 3 }
+      ]
+    },
+    {
+      "display": "schaap",
+      "letters": "SCHAAP",
+      "path": [
+        { "row": 7, "col": 1 },
+        { "row": 7, "col": 2 },
+        { "row": 6, "col": 1 },
+        { "row": 6, "col": 2 },
+        { "row": 5, "col": 1 },
+        { "row": 4, "col": 1 }
+      ]
+    },
+    {
+      "display": "paard",
+      "letters": "PAARD",
+      "path": [
+        { "row": 3, "col": 3 },
+        { "row": 2, "col": 4 },
+        { "row": 1, "col": 4 },
+        { "row": 0, "col": 3 },
+        { "row": 0, "col": 2 }
+      ]
+    },
+    {
+      "display": "koe",
+      "letters": "KOE",
+      "path": [
+        { "row": 5, "col": 5 },
+        { "row": 5, "col": 4 },
+        { "row": 4, "col": 5 }
+      ]
+    },
+    {
+      "display": "kip",
+      "letters": "KIP",
+      "path": [
+        { "row": 3, "col": 4 },
+        { "row": 4, "col": 4 },
+        { "row": 3, "col": 5 }
+      ]
+    },
+    {
+      "display": "geit",
+      "letters": "GEIT",
+      "path": [
+        { "row": 0, "col": 5 },
+        { "row": 0, "col": 4 },
+        { "row": 1, "col": 5 },
+        { "row": 2, "col": 5 }
+      ]
+    },
+    {
+      "display": "eend",
+      "letters": "EEND",
+      "path": [
+        { "row": 1, "col": 3 },
+        { "row": 2, "col": 3 },
+        { "row": 1, "col": 2 },
+        { "row": 2, "col": 2 }
+      ]
+    },
+    {
+      "display": "ezel",
+      "letters": "EZEL",
+      "path": [
+        { "row": 5, "col": 3 },
+        { "row": 5, "col": 2 },
+        { "row": 6, "col": 3 },
+        { "row": 6, "col": 4 }
+      ]
+    },
+    {
+      "display": "haan",
+      "letters": "HAAN",
+      "path": [
+        { "row": 7, "col": 3 },
+        { "row": 7, "col": 4 },
+        { "row": 6, "col": 5 },
+        { "row": 7, "col": 5 }
+      ]
+    }
+  ]
+}

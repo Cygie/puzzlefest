@@ -1,0 +1,114 @@
+{
+  "version": 1,
+  "id": "muziek",
+  "theme": "Muziek",
+  "hint": "Luister maar",
+  "width": 6,
+  "height": 8,
+  "grid": ["ZAFLIT", "NLABUL", "GOURHE", "EOTPAM", "NRIVTM", "AOGIAO", "PIRART", "ORKEST"],
+  "words": [
+    {
+      "display": "orkest",
+      "letters": "ORKEST",
+      "path": [
+        { "row": 7, "col": 0 },
+        { "row": 7, "col": 1 },
+        { "row": 7, "col": 2 },
+        { "row": 7, "col": 3 },
+        { "row": 7, "col": 4 },
+        { "row": 7, "col": 5 }
+      ],
+      "key": true
+    },
+    {
+      "display": "gitaar",
+      "letters": "GITAAR",
+      "path": [
+        { "row": 5, "col": 2 },
+        { "row": 5, "col": 3 },
+        { "row": 4, "col": 4 },
+        { "row": 5, "col": 4 },
+        { "row": 6, "col": 3 },
+        { "row": 6, "col": 2 }
+      ]
+    },
+    {
+      "display": "piano",
+      "letters": "PIANO",
+      "path": [
+        { "row": 6, "col": 0 },
+        { "row": 6, "col": 1 },
+        { "row": 5, "col": 0 },
+        { "row": 4, "col": 0 },
+        { "row": 5, "col": 1 }
+      ]
+    },
+    {
+      "display": "trommel",
+      "letters": "TROMMEL",
+      "path": [
+        { "row": 6, "col": 5 },
+        { "row": 6, "col": 4 },
+        { "row": 5, "col": 5 },
+        { "row": 4, "col": 5 },
+        { "row": 3, "col": 5 },
+        { "row": 2, "col": 5 },
+        { "row": 1, "col": 5 }
+      ]
+    },
+    {
+      "display": "fluit",
+      "letters": "FLUIT",
+      "path": [
+        { "row": 0, "col": 2 },
+        { "row": 0, "col": 3 },
+        { "row": 1, "col": 4 },
+        { "row": 0, "col": 4 },
+        { "row": 0, "col": 5 }
+      ]
+    },
+    {
+      "display": "viool",
+      "letters": "VIOOL",
+      "path": [
+        { "row": 4, "col": 3 },
+        { "row": 4, "col": 2 },
+        { "row": 3, "col": 1 },
+        { "row": 2, "col": 1 },
+        { "row": 1, "col": 1 }
+      ]
+    },
+    {
+      "display": "harp",
+      "letters": "HARP",
+      "path": [
+        { "row": 2, "col": 4 },
+        { "row": 3, "col": 4 },
+        { "row": 2, "col": 3 },
+        { "row": 3, "col": 3 }
+      ]
+    },
+    {
+      "display": "tuba",
+      "letters": "TUBA",
+      "path": [
+        { "row": 3, "col": 2 },
+        { "row": 2, "col": 2 },
+        { "row": 1, "col": 3 },
+        { "row": 1, "col": 2 }
+      ]
+    },
+    {
+      "display": "zanger",
+      "letters": "ZANGER",
+      "path": [
+        { "row": 0, "col": 0 },
+        { "row": 0, "col": 1 },
+        { "row": 1, "col": 0 },
+        { "row": 2, "col": 0 },
+        { "row": 3, "col": 0 },
+        { "row": 4, "col": 1 }
+      ]
+    }
+  ]
+}

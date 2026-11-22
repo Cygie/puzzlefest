@@ -1,0 +1,120 @@
+{
+  "version": 1,
+  "id": "school",
+  "theme": "Op school",
+  "hint": "Hier leer je veel",
+  "width": 6,
+  "height": 8,
+  "grid": ["ASJUJT", "TLPEFI", "LEMJNR", "OSILCK", "ODROSH", "HGBLNR", "CMUIII", "SLAAFT"],
+  "words": [
+    {
+      "display": "schooltas",
+      "letters": "SCHOOLTAS",
+      "path": [
+        { "row": 7, "col": 0 },
+        { "row": 6, "col": 0 },
+        { "row": 5, "col": 0 },
+        { "row": 4, "col": 0 },
+        { "row": 3, "col": 0 },
+        { "row": 2, "col": 0 },
+        { "row": 1, "col": 0 },
+        { "row": 0, "col": 0 },
+        { "row": 0, "col": 1 }
+      ],
+      "key": true
+    },
+    {
+      "display": "juf",
+      "letters": "JUF",
+      "path": [
+        { "row": 0, "col": 2 },
+        { "row": 0, "col": 3 },
+        { "row": 1, "col": 4 }
+      ]
+    },
+    {
+      "display": "pen",
+      "letters": "PEN",
+      "path": [
+        { "row": 1, "col": 2 },
+        { "row": 1, "col": 3 },
+        { "row": 2, "col": 4 }
+      ]
+    },
+    {
+      "display": "gum",
+      "letters": "GUM",
+      "path": [
+        { "row": 5, "col": 1 },
+        { "row": 6, "col": 2 },
+        { "row": 6, "col": 1 }
+      ]
+    },
+    {
+      "display": "liniaal",
+      "letters": "LINIAAL",
+      "path": [
+        { "row": 5, "col": 3 },
+        { "row": 6, "col": 3 },
+        { "row": 5, "col": 4 },
+        { "row": 6, "col": 4 },
+        { "row": 7, "col": 3 },
+        { "row": 7, "col": 2 },
+        { "row": 7, "col": 1 }
+      ]
+    },
+    {
+      "display": "schrift",
+      "letters": "SCHRIFT",
+      "path": [
+        { "row": 4, "col": 4 },
+        { "row": 3, "col": 4 },
+        { "row": 4, "col": 5 },
+        { "row": 5, "col": 5 },
+        { "row": 6, "col": 5 },
+        { "row": 7, "col": 4 },
+        { "row": 7, "col": 5 }
+      ]
+    },
+    {
+      "display": "krijt",
+      "letters": "KRIJT",
+      "path": [
+        { "row": 3, "col": 5 },
+        { "row": 2, "col": 5 },
+        { "row": 1, "col": 5 },
+        { "row": 0, "col": 4 },
+        { "row": 0, "col": 5 }
+      ]
+    },
+    {
+      "display": "bord",
+      "letters": "BORD",
+      "path": [
+        { "row": 5, "col": 2 },
+        { "row": 4, "col": 3 },
+        { "row": 4, "col": 2 },
+        { "row": 4, "col": 1 }
+      ]
+    },
+    {
+      "display": "lijm",
+      "letters": "LIJM",
+      "path": [
+        { "row": 3, "col": 3 },
+        { "row": 3, "col": 2 },
+        { "row": 2, "col": 3 },
+        { "row": 2, "col": 2 }
+      ]
+    },
+    {
+      "display": "les",
+      "letters": "LES",
+      "path": [
+        { "row": 1, "col": 1 },
+        { "row": 2, "col": 1 },
+        { "row": 3, "col": 1 }
+      ]
+    }
+  ]
+}

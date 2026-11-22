@@ -1,0 +1,108 @@
+{
+  "version": 1,
+  "id": "aan-zee",
+  "theme": "Aan zee",
+  "hint": "Neem je handdoek mee",
+  "width": 6,
+  "height": 8,
+  "grid": ["ALZRME", "BANDEM", "DSPLKA", "NCEIDS", "ARHNUT", "RKABGE", "TMEEOE", "SWULFL"],
+  "words": [
+    {
+      "display": "strandbal",
+      "letters": "STRANDBAL",
+      "path": [
+        { "row": 7, "col": 0 },
+        { "row": 6, "col": 0 },
+        { "row": 5, "col": 0 },
+        { "row": 4, "col": 0 },
+        { "row": 3, "col": 0 },
+        { "row": 2, "col": 0 },
+        { "row": 1, "col": 0 },
+        { "row": 0, "col": 0 },
+        { "row": 0, "col": 1 }
+      ],
+      "key": true
+    },
+    {
+      "display": "schelp",
+      "letters": "SCHELP",
+      "path": [
+        { "row": 2, "col": 1 },
+        { "row": 3, "col": 1 },
+        { "row": 4, "col": 2 },
+        { "row": 3, "col": 2 },
+        { "row": 2, "col": 3 },
+        { "row": 2, "col": 2 }
+      ]
+    },
+    {
+      "display": "zandkasteel",
+      "letters": "ZANDKASTEEL",
+      "path": [
+        { "row": 0, "col": 2 },
+        { "row": 1, "col": 1 },
+        { "row": 1, "col": 2 },
+        { "row": 1, "col": 3 },
+        { "row": 2, "col": 4 },
+        { "row": 2, "col": 5 },
+        { "row": 3, "col": 5 },
+        { "row": 4, "col": 5 },
+        { "row": 5, "col": 5 },
+        { "row": 6, "col": 5 },
+        { "row": 7, "col": 5 }
+      ]
+    },
+    {
+      "display": "golf",
+      "letters": "GOLF",
+      "path": [
+        { "row": 5, "col": 4 },
+        { "row": 6, "col": 4 },
+        { "row": 7, "col": 3 },
+        { "row": 7, "col": 4 }
+      ]
+    },
+    {
+      "display": "duin",
+      "letters": "DUIN",
+      "path": [
+        { "row": 3, "col": 4 },
+        { "row": 4, "col": 4 },
+        { "row": 3, "col": 3 },
+        { "row": 4, "col": 3 }
+      ]
+    },
+    {
+      "display": "meeuw",
+      "letters": "MEEUW",
+      "path": [
+        { "row": 6, "col": 1 },
+        { "row": 6, "col": 2 },
+        { "row": 6, "col": 3 },
+        { "row": 7, "col": 2 },
+        { "row": 7, "col": 1 }
+      ]
+    },
+    {
+      "display": "emmer",
+      "letters": "EMMER",
+      "path": [
+        { "row": 0, "col": 5 },
+        { "row": 0, "col": 4 },
+        { "row": 1, "col": 5 },
+        { "row": 1, "col": 4 },
+        { "row": 0, "col": 3 }
+      ]
+    },
+    {
+      "display": "krab",
+      "letters": "KRAB",
+      "path": [
+        { "row": 5, "col": 1 },
+        { "row": 4, "col": 1 },
+        { "row": 5, "col": 2 },
+        { "row": 5, "col": 3 }
+      ]
+    }
+  ]
+}
