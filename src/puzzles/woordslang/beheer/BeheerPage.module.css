@@ -1,0 +1,114 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.title {
+  margin: 4px 0 0;
+  font-size: 1.4rem;
+}
+
+.note {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.heading {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.seed {
+  font-weight: 400;
+  color: var(--color-text-muted);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-weight: 600;
+}
+
+.field textarea {
+  resize: vertical;
+  font-family: inherit;
+}
+
+.sizeRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.short,
+.over {
+  margin: 0;
+  color: var(--color-text-muted);
+}
+
+.over {
+  color: #c0392b;
+}
+
+.exact {
+  margin: 0;
+  color: #2e7d32;
+  font-weight: 600;
+}
+
+.error {
+  margin: 0;
+  padding: 12px;
+  border-radius: var(--radius);
+  background: #fdecea;
+  color: #8a1c12;
+}
+
+.actions {
+  display: flex;
+}
+
+.grid {
+  width: 100%;
+}
+
+.words {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+}
+
+.words li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.swatch {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+}
+
+.json {
+  font-family: ui-monospace, monospace;
+  font-size: 0.8rem;
+  resize: vertical;
+}
+
+.jsonActions {
+  display: flex;
+  gap: 8px;
+}

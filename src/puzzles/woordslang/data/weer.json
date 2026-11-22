@@ -1,0 +1,108 @@
+{
+  "version": 1,
+  "id": "weer",
+  "theme": "Het weer",
+  "hint": "Kijk eens naar buiten",
+  "width": 6,
+  "height": 8,
+  "grid": ["SNWLGO", "EUHAEO", "ESREGB", "EKIWDN", "MBLINE", "MDNOWG", "ORDOEE", "STLKNR"],
+  "words": [
+    {
+      "display": "regenboog",
+      "letters": "REGENBOOG",
+      "path": [
+        { "row": 7, "col": 5 },
+        { "row": 6, "col": 5 },
+        { "row": 5, "col": 5 },
+        { "row": 4, "col": 5 },
+        { "row": 3, "col": 5 },
+        { "row": 2, "col": 5 },
+        { "row": 1, "col": 5 },
+        { "row": 0, "col": 5 },
+        { "row": 0, "col": 4 }
+      ],
+      "key": true
+    },
+    {
+      "display": "bliksem",
+      "letters": "BLIKSEM",
+      "path": [
+        { "row": 4, "col": 1 },
+        { "row": 4, "col": 2 },
+        { "row": 3, "col": 2 },
+        { "row": 3, "col": 1 },
+        { "row": 2, "col": 1 },
+        { "row": 3, "col": 0 },
+        { "row": 4, "col": 0 }
+      ]
+    },
+    {
+      "display": "sneeuw",
+      "letters": "SNEEUW",
+      "path": [
+        { "row": 0, "col": 0 },
+        { "row": 0, "col": 1 },
+        { "row": 1, "col": 0 },
+        { "row": 2, "col": 0 },
+        { "row": 1, "col": 1 },
+        { "row": 0, "col": 2 }
+      ]
+    },
+    {
+      "display": "donder",
+      "letters": "DONDER",
+      "path": [
+        { "row": 6, "col": 2 },
+        { "row": 5, "col": 3 },
+        { "row": 4, "col": 4 },
+        { "row": 3, "col": 4 },
+        { "row": 2, "col": 3 },
+        { "row": 2, "col": 2 }
+      ]
+    },
+    {
+      "display": "hagel",
+      "letters": "HAGEL",
+      "path": [
+        { "row": 1, "col": 2 },
+        { "row": 1, "col": 3 },
+        { "row": 2, "col": 4 },
+        { "row": 1, "col": 4 },
+        { "row": 0, "col": 3 }
+      ]
+    },
+    {
+      "display": "storm",
+      "letters": "STORM",
+      "path": [
+        { "row": 7, "col": 0 },
+        { "row": 7, "col": 1 },
+        { "row": 6, "col": 0 },
+        { "row": 6, "col": 1 },
+        { "row": 5, "col": 0 }
+      ]
+    },
+    {
+      "display": "wind",
+      "letters": "WIND",
+      "path": [
+        { "row": 3, "col": 3 },
+        { "row": 4, "col": 3 },
+        { "row": 5, "col": 2 },
+        { "row": 5, "col": 1 }
+      ]
+    },
+    {
+      "display": "wolken",
+      "letters": "WOLKEN",
+      "path": [
+        { "row": 5, "col": 4 },
+        { "row": 6, "col": 3 },
+        { "row": 7, "col": 2 },
+        { "row": 7, "col": 3 },
+        { "row": 6, "col": 4 },
+        { "row": 7, "col": 4 }
+      ]
+    }
+  ]
+}

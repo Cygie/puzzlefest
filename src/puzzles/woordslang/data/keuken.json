@@ -1,0 +1,102 @@
+{
+  "version": 1,
+  "id": "keuken",
+  "theme": "In de keuken",
+  "hint": "Hier ruikt het vaak lekker",
+  "width": 6,
+  "height": 8,
+  "grid": ["NENNAP", "KOUNRF", "EKISLO", "TEEETE", "IDDRGA", "GVEARP", "REGLOS", "TROHCS"],
+  "words": [
+    {
+      "display": "pannenkoek",
+      "letters": "PANNENKOEK",
+      "path": [
+        { "row": 0, "col": 5 },
+        { "row": 0, "col": 4 },
+        { "row": 0, "col": 3 },
+        { "row": 0, "col": 2 },
+        { "row": 0, "col": 1 },
+        { "row": 0, "col": 0 },
+        { "row": 1, "col": 0 },
+        { "row": 1, "col": 1 },
+        { "row": 2, "col": 0 },
+        { "row": 2, "col": 1 }
+      ],
+      "key": true
+    },
+    {
+      "display": "vergiet",
+      "letters": "VERGIET",
+      "path": [
+        { "row": 5, "col": 1 },
+        { "row": 6, "col": 1 },
+        { "row": 6, "col": 0 },
+        { "row": 5, "col": 0 },
+        { "row": 4, "col": 0 },
+        { "row": 3, "col": 1 },
+        { "row": 3, "col": 0 }
+      ]
+    },
+    {
+      "display": "fornuis",
+      "letters": "FORNUIS",
+      "path": [
+        { "row": 1, "col": 5 },
+        { "row": 2, "col": 5 },
+        { "row": 1, "col": 4 },
+        { "row": 1, "col": 3 },
+        { "row": 1, "col": 2 },
+        { "row": 2, "col": 2 },
+        { "row": 2, "col": 3 }
+      ]
+    },
+    {
+      "display": "schort",
+      "letters": "SCHORT",
+      "path": [
+        { "row": 7, "col": 5 },
+        { "row": 7, "col": 4 },
+        { "row": 7, "col": 3 },
+        { "row": 7, "col": 2 },
+        { "row": 7, "col": 1 },
+        { "row": 7, "col": 0 }
+      ]
+    },
+    {
+      "display": "spatel",
+      "letters": "SPATEL",
+      "path": [
+        { "row": 6, "col": 5 },
+        { "row": 5, "col": 5 },
+        { "row": 4, "col": 5 },
+        { "row": 3, "col": 4 },
+        { "row": 3, "col": 5 },
+        { "row": 2, "col": 4 }
+      ]
+    },
+    {
+      "display": "deegrol",
+      "letters": "DEEGROL",
+      "path": [
+        { "row": 4, "col": 1 },
+        { "row": 3, "col": 2 },
+        { "row": 3, "col": 3 },
+        { "row": 4, "col": 4 },
+        { "row": 5, "col": 4 },
+        { "row": 6, "col": 4 },
+        { "row": 6, "col": 3 }
+      ]
+    },
+    {
+      "display": "garde",
+      "letters": "GARDE",
+      "path": [
+        { "row": 6, "col": 2 },
+        { "row": 5, "col": 3 },
+        { "row": 4, "col": 3 },
+        { "row": 4, "col": 2 },
+        { "row": 5, "col": 2 }
+      ]
+    }
+  ]
+}

@@ -23,6 +23,13 @@ describe('App shell', () => {
       'page',
     );
   });
+
+  it('opens the woordslang admin page in dev builds', async () => {
+    window.location.hash = '#/woordslang/beheer';
+    render(<App />);
+    expect(await screen.findByRole('heading', { name: 'Woordslang beheer' })).toBeInTheDocument();
+    window.location.hash = '';
+  });
 });
 
 describe('parseHash', () => {

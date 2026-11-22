@@ -4,9 +4,13 @@ title: Admin page and puzzle publishing
 intent: woordslang
 complexity: medium
 mode: confirm
-status: pending
-depends_on: [woordslang-generator, shared-letter-grid]
+status: completed
+depends_on:
+  - woordslang-generator
+  - shared-letter-grid
 created: 2026-11-21T23:50:00Z
+run_id: run-puzzlefest-009
+completed_at: 2026-11-22T08:14:02.618Z
 ---
 
 # Work Item: Admin page and puzzle publishing
