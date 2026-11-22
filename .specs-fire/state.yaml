@@ -153,11 +153,13 @@ intents:
         completed_at: 2026-11-21T22:42:54.346Z
       - id: woordslang-generator
         title: Woordslang generator (backtracking + flood fill)
-        status: pending
+        status: completed
         complexity: high
         mode: validate
         depends_on:
           - woordslang-model-validator
+        run_id: run-puzzlefest-008
+        completed_at: 2026-11-22T08:04:32.932Z
       - id: woordslang-beheer
         title: Admin page and puzzle publishing
         status: pending
@@ -252,3 +254,11 @@ runs:
           mode: confirm
       started: 2026-11-21T22:32:21.254Z
       completed: 2026-11-21T22:42:54.346Z
+    - id: run-puzzlefest-008
+      scope: single
+      work_items:
+        - id: woordslang-generator
+          intent: woordslang
+          mode: validate
+      started: 2026-11-22T07:56:32.723Z
+      completed: 2026-11-22T08:04:32.932Z

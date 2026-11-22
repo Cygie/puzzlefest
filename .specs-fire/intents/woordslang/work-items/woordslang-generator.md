@@ -4,9 +4,12 @@ title: Woordslang generator (backtracking + flood fill)
 intent: woordslang
 complexity: high
 mode: validate
-status: pending
-depends_on: [woordslang-model-validator]
+status: completed
+depends_on:
+  - woordslang-model-validator
 created: 2026-11-21T23:50:00Z
+run_id: run-puzzlefest-008
+completed_at: 2026-11-22T08:04:32.932Z
 ---
 
 # Work Item: Woordslang generator
