@@ -67,3 +67,15 @@
     padding: 0;
   }
 }
+
+/* Two menu items next to the brand must fit on a 360px phone. */
+@media (max-width: 420px) {
+  .header {
+    gap: 8px;
+  }
+
+  .navLink {
+    padding: 10px 8px;
+    font-size: 0.95rem;
+  }
+}

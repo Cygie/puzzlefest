@@ -1,8 +1,9 @@
 ---
 id: woordslang
 title: Woordslang-puzzel toevoegen aan PuzzleFest
-status: in_progress
+status: completed
 created: 2026-11-21T23:40:00Z
+completed_at: 2026-11-22T08:44:28.102Z
 ---
 
 # Intent: Woordslang-puzzel

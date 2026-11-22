@@ -4,9 +4,14 @@ title: Woordslang play page
 intent: woordslang
 complexity: medium
 mode: confirm
-status: pending
-depends_on: [shared-letter-grid, woordslang-model-validator, woordslang-beheer]
+status: completed
+depends_on:
+  - shared-letter-grid
+  - woordslang-model-validator
+  - woordslang-beheer
 created: 2026-11-21T23:50:00Z
+run_id: run-puzzlefest-010
+completed_at: 2026-11-22T08:44:28.080Z
 ---
 
 # Work Item: Woordslang play page

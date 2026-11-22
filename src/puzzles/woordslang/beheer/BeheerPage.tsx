@@ -5,22 +5,12 @@ import { randomSeed } from '@/shared/random';
 import type { Result } from '@/shared/result';
 import { type GridController, type GridStroke, LetterGrid } from '@/shared/grid/LetterGrid';
 
+import { KEY_COLOR, WORD_COLORS } from '../colors';
 import { type GenerateError, generatePuzzle } from '../logic/generatePuzzle';
 import { MAX_GRID_SIZE, MIN_GRID_SIZE, type WoordslangPuzzle } from '../logic/types';
 import styles from './BeheerPage.module.css';
 import { countStatus, formatPuzzleJson, parseWordList, slugify } from './beheerInput';
 
-export const KEY_COLOR = '#ffc43d';
-export const WORD_COLORS = [
-  '#8ecae6',
-  '#90be6d',
-  '#f28482',
-  '#cdb4db',
-  '#f4a261',
-  '#a0c4ff',
-  '#b5e48c',
-  '#ffadad',
-];
 /** Lets the browser paint the busy button before the (synchronous) search starts. */
 const BUSY_PAINT_MS = 30;
 

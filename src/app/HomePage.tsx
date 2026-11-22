@@ -15,6 +15,14 @@ export function HomePage() {
             </span>
           </a>
         </li>
+        <li>
+          <a className={styles.tile} href={hrefFor('woordslang')}>
+            <span className={styles.tileTitle}>Woordslang</span>
+            <span className={styles.tileText}>
+              Raad het thema en vind de woorden die door het raster slingeren.
+            </span>
+          </a>
+        </li>
       </ul>
     </section>
   );

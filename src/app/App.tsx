@@ -1,5 +1,6 @@
 import { lazy, Suspense } from 'react';
 
+import { WoordslangPage } from '@/puzzles/woordslang/WoordslangPage';
 import { WoordzoekerPage } from '@/puzzles/woordzoeker/WoordzoekerPage';
 
 import styles from './App.module.css';
@@ -35,6 +36,13 @@ export function App() {
           >
             Woordzoeker
           </a>
+          <a
+            className={styles.navLink}
+            href={hrefFor('woordslang')}
+            aria-current={route === 'woordslang' ? 'page' : undefined}
+          >
+            Woordslang
+          </a>
         </nav>
       </header>
       <main className={styles.main}>
@@ -44,6 +52,8 @@ export function App() {
           </Suspense>
         ) : route === 'woordzoeker' ? (
           <WoordzoekerPage />
+        ) : route === 'woordslang' ? (
+          <WoordslangPage />
         ) : (
           <HomePage />
         )}
